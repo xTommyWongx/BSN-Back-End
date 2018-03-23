@@ -10,5 +10,5 @@ exports.up = function(knex, Promise) {
 };
 
 exports.down = function(knex, Promise) {
-  return knex.schem.dropTable('tournaments_teams');
+  return knex.schema.dropTable('tournaments_teams');
 };
