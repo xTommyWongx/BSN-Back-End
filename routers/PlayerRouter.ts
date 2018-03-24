@@ -5,8 +5,8 @@ export default class PlayerRouter {
     constructor(private playerService: PlayerService){
 
     }
-    router(){
-        let router = Router();
+    router():Router{
+        let router:Router = Router();
         router.put('/leaveTeam/:id',this.leaveTeam); //leave current team
         router.post('/joinTeam',this.joinTeam); //request to join team
 

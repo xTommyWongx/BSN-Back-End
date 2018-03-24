@@ -5,4 +5,9 @@ export default class OrganizerRouter {
     constructor(private organizerService: OrganizerService){
 
     }
+    router():Router{
+        let router:Router = Router();
+
+        return router;
+    }
 }
