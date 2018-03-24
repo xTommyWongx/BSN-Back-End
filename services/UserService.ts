@@ -4,9 +4,14 @@ export default class UserService {
     constructor(private knex : knex){
 
     }
-    getProfile(req: Request, res: Response){
+    createNewInformation(basicUserInformation: Models.BasicUserInforamtion){
+        return this.knex('users').insert(basicUserInformation);
+    }
+
+    getProfile(){
 
     }
+    
     dashboard(req: Request, res: Response){
 
     }

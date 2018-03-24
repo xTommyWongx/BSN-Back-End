@@ -27,9 +27,9 @@ import initapp from './utils/init-app';
 const {app} = initapp(knex);
 
 
-app.use('/api/user', new UserRouter(userService).router());
-app.use('/api/player', new PlayerRouter(playerService).router());
-app.use('/api/manager', new ManagerRouter(managerService).router());
+app.use('/api/users', new UserRouter(userService).router());
+app.use('/api/players', new PlayerRouter(playerService).router());
+app.use('/api/managers', new ManagerRouter(managerService).router());
 
 
 app.listen(port, () => {
