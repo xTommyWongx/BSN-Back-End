@@ -14,7 +14,7 @@ export default class AuthService {
     }
 
     // register user
-    register(user: any) {
+    register(user: Models.SignUpUser) {
         return bcrypt.genSalt(10, (err, salt) => {
             bcrypt.hash(user.password, salt, (err, hash) => {
                 if (err) {
@@ -23,7 +23,7 @@ export default class AuthService {
                 }
                 user.password = hash;
                 // save the new user in the db
-                console.log("testme here");
+                console.log("before insert");
                 return this.knex('users')
                     .insert({
                         firstname: user.firstname,
@@ -31,6 +31,8 @@ export default class AuthService {
                         email: user.email,
                         password: user.password,
                         status: user.role
+                    }).then(()=>{
+                        
                     });
             })
         })

@@ -8,7 +8,7 @@ export default class AuthRouter {
     router(): Router {
         let router: Router = Router();
         router.get('/login', this.login);
-        router.post('/register', this.register.bind(this));
+        router.post('/register', this.register);
 
         return router;
     }

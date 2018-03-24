@@ -33,11 +33,11 @@ import initapp from './utils/init-app';
 const {app} = initapp(knex);
 
 
-app.use('/api/user', new UserRouter(userService).router());
-app.use('/api/player', new PlayerRouter(playerService).router());
-app.use('/api/manager', new ManagerRouter(managerService).router());
-app.use('/api/organizer', new OrganizerRouter(organizerService).router());
-app.use('/api/auth', new AuthRouter(authService).router());
+app.use('/api/users', new UserRouter(userService).router()); // users commom functions
+app.use('/api/players', new PlayerRouter(playerService).router());  // specific to player fuctions
+app.use('/api/managers', new ManagerRouter(managerService).router()); // specific to manager functions
+app.use('/api/organizers', new OrganizerRouter(organizerService).router()); // specific to organizer functions
+app.use('/api/auth', new AuthRouter(authService).router()); //login and registration of users
 
 app.listen(port, () => {
     console.log(`Server listening on port ${port}`);
