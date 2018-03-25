@@ -1,7 +1,9 @@
 import { Router, Request, Response } from 'express';
 import AuthService from '../services/AuthService';
-import config from '../config/config';
+import axios from 'axios';
 import * as jwt from 'jwt-simple';
+import config from '../config/config';
+
 
 export default class AuthRouter {
     constructor(private authService: AuthService) {
@@ -11,6 +13,7 @@ export default class AuthRouter {
         let router: Router = Router();
         router.post('/login', this.login);
         router.post('/register', this.register);
+        router.post('/facebook', this.facebook);
 
         return router;
     }
@@ -32,10 +35,36 @@ export default class AuthRouter {
                                 user: user[0]
                             })
                         }
-
                     })
                 }
             })
+    }
+
+    private async facebook(req: Request, res: Response) {
+        if (req.body.access_token) {
+            try {
+                const accessToken = req.body.access_token;
+                let data = await axios.get(`https://graph.facebook.com/me?access_token=${accessToken}`);
+
+                if (!data.data.error) {
+                    // const facebookId = data.data.id;
+                    // const facebookUserName = data.data.name;
+                    // await this.authService.login(facebookId, facebookUserName)
+                    let payload = {
+                        id: accessToken
+                    }
+
+                    let token = jwt.encode(payload, config.jwtSecret);
+                    res.json({
+                        token: token
+                    });
+                }
+            } catch {
+                res.sendStatus(401);
+            }
+        } else {
+            res.sendStatus(401);
+        }
     }
 
     register = (req: Request, res: Response) => {
@@ -48,15 +77,14 @@ export default class AuthRouter {
             }).then(() => {
                 return this.authService.register(req.body);
             }).then(() => {
-                res.status(200).json({success: true,  msg: "Successfully registered" });
+                res.status(200).json({ success: true, msg: "Successfully registered" });
             }).catch((err) => {
                 console.log("err, ", err);
                 if (err === "Email already in use") {
-                    res.json({success:false, msg: err })
+                    res.json({ success: false, msg: err })
                 } else {
                     res.status(500).json(err);
                 }
             });
-
     }
 }

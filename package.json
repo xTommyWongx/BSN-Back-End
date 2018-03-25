@@ -10,8 +10,8 @@
   "author": "Bal, Tommy, Thomas,Billy",
   "license": "ISC",
   "dependencies": {
+    "@types/axios": "^0.14.0",
     "@types/bcrypt": "^1.0.0",
-    "@types/body-parser": "^1.16.8",
     "@types/cors": "^2.8.3",
     "@types/dotenv": "^4.0.2",
     "@types/express": "^4.11.1",
@@ -21,6 +21,7 @@
     "@types/passport": "^0.4.3",
     "@types/passport-jwt": "^3.0.1",
     "@types/require-dir": "^0.3.0",
+    "axios": "^0.18.0",
     "bcrypt": "^1.0.3",
     "body-parser": "^1.18.2",
     "cors": "^2.8.4",
@@ -34,5 +35,8 @@
     "require-dir": "^1.0.0",
     "ts-node": "^5.0.1",
     "typescript": "^2.7.2"
+  },
+  "devDependencies": {
+    "@types/body-parser": "^1.16.8"
   }
 }

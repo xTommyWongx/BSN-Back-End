@@ -32,7 +32,6 @@ import initapp from './utils/init-app';
 
 const {app} = initapp(knex);
 
-
 app.use('/api/users', new UserRouter(userService).router()); // users commom functions
 app.use('/api/players', new PlayerRouter(playerService).router());  // specific to player fuctions
 app.use('/api/managers', new ManagerRouter(managerService).router()); // specific to manager functions
