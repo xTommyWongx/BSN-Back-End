@@ -24,4 +24,8 @@ declare module Models{
         confirm_password? : string;
         role: string
     }
+    interface LoginUser {
+        email: string,
+        password: string
+    }
 }
