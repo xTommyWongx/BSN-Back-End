@@ -26,6 +26,13 @@ export default class AuthService {
             throw err;
         }
     }
+   // compare password
+   comparePassword(password: string, hash: string, callback:(err:Error | null, match:boolean)=>void){
+        bcrypt.compare(password, hash, (err, isMatch) => {
+            if(err) throw err;
+            callback(null, isMatch);
+        });
+   }
 
     // check if email is already used;
     checkEmail(email: string) {

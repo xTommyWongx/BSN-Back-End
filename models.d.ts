@@ -13,8 +13,8 @@ declare module Models{
         location: string,
         status: string,
         image?: string,
-        teamName?: string
-        // teamLogo?; 
+        teamName?: string,
+        // teamLogo?: string
     }
     interface SignUpUser {
         firstname: string,
@@ -23,5 +23,9 @@ declare module Models{
         password: string,
         confirm_password? : string;
         role: string
+    }
+    interface LoginUser {
+        email: string,
+        password: string
     }
 }
