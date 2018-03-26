@@ -78,15 +78,18 @@ export default class AuthRouter {
                     throw msg;
                 }
             }).then(() => {
-                return this.authService.register(req.body);
+                return this.authService.encrypt(req.body);
+            }).then(hash=>{
+                return this.authService.register(hash, req.body);
             }).then(() => {
+                console.log("success");
                 res.status(200).json({ success: true, msg: "Successfully registered" });
             }).catch((err) => {
                 console.log("err, ", err);
                 if (err === "Email already in use") {
                     res.json({ success: false, msg: err })
                 } else {
-                    res.status(500).json(err);
+                    res.json({ success: false, msg: "Something went wrong on the server"});
                 }
             });
     }

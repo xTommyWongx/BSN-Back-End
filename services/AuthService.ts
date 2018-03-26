@@ -40,20 +40,22 @@ export default class AuthService {
     }
 
     // register user
-    register(user: Models.SignUpUser) {
-        return new Promise((resolve, reject) => {
-            return bcrypt.genSalt(10, (err, salt) => {  //genSalt itself is not promise, only callback
+    encrypt(user: Models.SignUpUser) {             
+    return new Promise((resolve, reject) => { 
+        return bcrypt.genSalt(10, (err, salt) => {  
                 bcrypt.hash(user.password, salt, (err, hash) => {
                     if (err) {
                         console.log('bcrypt err', err);
-                        throw err;
-                    }
-                    user.password = hash;
-                    // save the new user in the db
-                    console.log("before insert");
-                    resolve();
+                        reject(err);                    
+                    }                
+                    resolve(hash)
                 })
             })
-        }).then(() => this.knex('users').insert(user));
+        })
+    }
+    // separated to catch the errors that might occer during insert
+    register(hash:any, user:Models.SignUpUser){
+        user.password = hash;
+        return this.knex('user').insert(user);
     }
 }
