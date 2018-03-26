@@ -28,7 +28,7 @@ export default class UserRouter {
 
     }
     dashboard = (req: Request, res: Response) => {
-
+        
     }
     teamsList = (req: Request, res: Response) => {
 

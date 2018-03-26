@@ -16,4 +16,16 @@ declare module Models{
         teamName?: string,
         // teamLogo?: string
     }
+    interface SignUpUser {
+        firstname: string,
+        lastname: string,
+        email: string,
+        password: string,
+        confirm_password? : string;
+        role: string
+    }
+    interface LoginUser {
+        email: string,
+        password: string
+    }
 }
