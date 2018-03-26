@@ -17,18 +17,19 @@ export default class AuthRouter {
 
         return router;
     }
-    
-    private async facebook(req:Request, res:Response){
+
+     facebook = async (req:Request, res:Response) => {
         if(req.body.access_token) {
             try {
                 const accessToken = req.body.access_token;
                 let data = await axios.get(`https://graph.facebook.com/me?access_token=${accessToken}`);
                 
                 if(!data.data.error) {
-                    // const facebookId = data.data.id;
-                    // const facebookUserName = data.data.name;
+                    const facebookId = parseInt(data.data.id);
+                    const facebookUserName = data.data.name;
+                    console.log(typeof(facebookId));
 
-                    // await this.authService.login(facebookId, facebookUserName)
+                    await this.authService.login(facebookId, facebookUserName)
                         let payload = {
                             id: accessToken
                         }
@@ -38,7 +39,8 @@ export default class AuthRouter {
                             token: token
                         });
                 }
-            } catch {
+            } catch(err) {
+                console.log(err)
                 res.sendStatus(401);
             }
         } else {
@@ -67,3 +69,5 @@ export default class AuthRouter {
             });
     }
 }
+
+let test = new AuthRouter()

@@ -20,11 +20,11 @@ export default class AuthService {
                     })
                     .into('users')
             }
-        } catch {
-            throw new Error('Error from AuthService');
+            
+            return;
+        } catch(err) {
+            throw err;
         }
-
-        return;
     }
 
     // check if email is already used;
