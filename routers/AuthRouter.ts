@@ -11,44 +11,42 @@ export default class AuthRouter {
     }
     router(): Router {
         let router: Router = Router();
-        router.post('/login', this.login);
         router.post('/register', this.register);
-        router.post('/facebook', this.facebook);
+        router.post('/login', this.login);
+        router.post('/login/facebook', this.facebook);
 
         return router;
     }
 
-
-    facebook = async (req:Request, res:Response) => {
-        if(req.body.access_token) {
+    facebook = async (req: Request, res: Response) => {
+        if (req.body.access_token) {
             try {
                 const accessToken = req.body.access_token;
                 let data = await axios.get(`https://graph.facebook.com/me?access_token=${accessToken}`);
-                
-                if(!data.data.error) {
+
+                if (!data.data.error) {
                     const facebookId = parseInt(data.data.id);
                     const facebookUserName = data.data.name;
 
                     await this.authService.login(facebookId, facebookUserName)
-                        let payload = {
-                            id: facebookId
-                        }
-
-                        let token = jwt.encode(payload, config.jwtSecret);
-                        res.json({
-                            token: token
-                        });
+                    let payload = {
+                        facebook_id: facebookId
                     }
-                } catch(err) {
-                    res.sendStatus(401);
+
+                    let token = jwt.encode(payload, config.jwtSecret);
+                    res.json({
+                        token: token
+                    });
                 }
-            } else {
+            } catch (err) {
                 res.sendStatus(401);
             }
+        } else {
+            res.sendStatus(401);
         }
+    }
 
     login = (req: Request, res: Response) => {
-        console.log("login", req.body);
         return this.authService.checkEmail(req.body.email)
             .then((user) => {
                 if (user < 1) {
@@ -57,7 +55,10 @@ export default class AuthRouter {
                     this.authService.comparePassword(req.body.password, user[0].password, (err, match) => {
                         if (err) throw err;
                         if (match) {
-                            const token = jwt.encode({ data: user[0] }, config.jwtSecret);
+                            let payload = {
+                                user_id: user[0].user_id
+                            }
+                            const token = jwt.encode(/* data: user[0] */ payload, config.jwtSecret);
                             res.json({
                                 success: true,
                                 token: token,

@@ -44,13 +44,14 @@ export default class UserRouter {
     }
 
     get = (req: Request, res: Response) => {
-        // if (req.user) {
-            return this.userService.getProfile(1)
+        // console.log(req.user)
+        if (req.user) {
+            return this.userService.getProfile(req.user.id)
                 .then(data => res.json(data))
                 .catch(err => res.status(500).json(err));
-        // } else {
-        //     return -1;
-        // }
+        } else {
+            return -1;
+        }
     }
 
     post = (req: Request, res: Response) => {
@@ -63,7 +64,7 @@ export default class UserRouter {
 
     patch = (req: Request, res: Response) => {
         if (req.user) {
-            return this.userService.editProfile(1, req.body)
+            return this.userService.editProfile(req.user.id, req.body)
                 .then(data => res.json(data))
                 .catch(err => res.status(500).json(err));
         } else {
