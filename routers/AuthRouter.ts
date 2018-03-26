@@ -69,5 +69,3 @@ export default class AuthRouter {
             });
     }
 }
-
-let test = new AuthRouter()
