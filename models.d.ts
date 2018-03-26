@@ -13,7 +13,7 @@ declare module Models{
         location: string,
         status: string,
         image?: string,
-        teamName?: string
-        // teamLogo?; 
+        teamName?: string,
+        // teamLogo?: string
     }
 }
