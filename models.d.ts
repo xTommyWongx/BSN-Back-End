@@ -31,7 +31,7 @@ declare module Models{
         password: string
     }
 
-    // create tournament form
+    // Organizer service create tournaments
     interface PostTournamentBody {
         category: string;
         number_of_teams: string;

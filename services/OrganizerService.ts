@@ -3,8 +3,23 @@ import * as Knex from 'knex';
 export default class OrganizerService {
     constructor(private knex: Knex){ }
 
+    // get all tournament post
+    async index() {
+        try {
+            return await this.knex
+                .select()
+                .from('tournaments')
+                .innerJoin('tournaments_dates_location', 'tournaments_dates_location.tournament_id', 'tournaments.tournament_id')
+        }
+        catch (err){
+            throw err;
+        }
+    }
+    
+    //create tournament    
+    //haven't stored organizer_id, need to get the id from front end
     create(reqBody: Models.PostTournamentBody) {
-            this.knex.transaction(async (trx) => {
+        return this.knex.transaction(async (trx) => {
             try {
                 const tournamentId = await trx
                     .insert({
@@ -28,7 +43,8 @@ export default class OrganizerService {
                         tournament_id: tournamentId[0]
                     })
                     .into("tournaments_dates_location")
-            } catch (err) {
+            }
+            catch (err) {
                 throw err;
             }
         })
