@@ -22,8 +22,8 @@ declare module Models{
         lastname: string,
         email: string,
         password: string,
-        confirm_password? : string;
-        role: string
+        // confirm_password? : string; --> @Bal, we dun need confirmed password in backend. Instead, we check in front end and pass the password only to database
+        status: string
     }
 
     interface LoginUser {

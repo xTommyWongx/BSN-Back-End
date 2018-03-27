@@ -8,14 +8,14 @@ import * as Knex from 'knex';
 export default  (knex: Knex) => {
     
     let app = express();
+    let auth = passport(app, knex);
+    
     app.use(bodyParser.urlencoded({ extended: false }));
     app.use(bodyParser.json());
-    
     app.use(cors());
 
-    passport(app, knex);
-    
     return {
         app: app,
+        auth: auth
     }
 }

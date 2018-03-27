@@ -30,9 +30,9 @@ let authService = new AuthService(knex);
 
 import initapp from './utils/init-app';
 
-const {app} = initapp(knex);
+const {app, auth} = initapp(knex);
 
-app.use('/api/users', new UserRouter(userService).router()); // users commom functions
+app.use('/api/users', auth.authenticate(), new UserRouter(userService).router()); // users commom functions
 app.use('/api/players', new PlayerRouter(playerService).router());  // specific to player fuctions
 app.use('/api/managers', new ManagerRouter(managerService).router()); // specific to manager functions
 app.use('/api/organizers', new OrganizerRouter(organizerService).router()); // specific to organizer functions

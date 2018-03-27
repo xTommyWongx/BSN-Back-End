@@ -18,7 +18,7 @@ export default class UserService {
     editProfile(userId:number, modifier:{}){
         return this.knex('users')
             .where('user_id',userId)
-            .update(modifier)
+            .update(modifier);
     }
 
     dashboard(req: Request, res: Response){
