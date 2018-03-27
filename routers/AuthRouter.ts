@@ -25,6 +25,7 @@ export default class AuthRouter {
                 const accessToken = req.body.access_token;
                 let data = await axios.get(`https://graph.facebook.com/me?access_token=${accessToken}`);
                 
+                console.log(data)
                 if(!data.data.error) {
                     const facebookId = parseInt(data.data.id);
                     const facebookUserName = data.data.name;

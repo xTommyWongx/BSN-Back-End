@@ -16,6 +16,7 @@ declare module Models{
         teamName?: string,
         // teamLogo?: string
     }
+
     interface SignUpUser {
         firstname: string,
         lastname: string,
@@ -24,8 +25,23 @@ declare module Models{
         confirm_password? : string;
         role: string
     }
+
     interface LoginUser {
         email: string,
         password: string
     }
+
+    // create tournament form
+    interface PostTournamentBody {
+        category: string;
+        number_of_teams: string;
+        game_size: string;
+        organizer_id: string;
+        tournament_name: string;
+        winner_prize: string;
+        runnerup_prize: string;
+        entry_fee: string;
+        date: string;
+        location: string;
+    } 
 }
