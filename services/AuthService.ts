@@ -23,6 +23,7 @@ export default class AuthService {
 
             return;
         } catch (err) {
+            console.log(err)
             throw err;
         }
     }

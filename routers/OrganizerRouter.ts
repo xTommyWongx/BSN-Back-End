@@ -16,7 +16,8 @@ export default class OrganizerRouter {
     private index = async (req: Request, res: Response) => {
         try {
             const result = await this.organizerService.index()
-            res.json({success: true, result: result});
+            // res.json({success: true, result: result});
+            res.json(result);
         }
         catch (err) {
             res.sendStatus(500);
