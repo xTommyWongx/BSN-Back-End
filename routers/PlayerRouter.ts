@@ -9,6 +9,7 @@ export default class PlayerRouter {
         let router:Router = Router();
         router.put('/leaveTeam/:id',this.leaveTeam); //leave current team
         router.post('/joinTeam',this.joinTeam); //request to join team
+        router.get('/getRequests',this.getRequests);//get the requests from managers to join them
 
         return router;
     }
@@ -17,5 +18,20 @@ export default class PlayerRouter {
     }
     joinTeam = (req: Request, res: Response)=>{
 
+    }
+    getRequests = (req: Request, res: Response)=>{
+        console.log("user ",req.user);
+        if(req.user){
+            return this.playerService.getRequests(req.user.id)
+                    .then((requests)=>{
+                        console.log(requests,"requests");
+                        res.json(requests)
+                    }).catch((err)=>{
+                        console.log(err);
+                        res.json(err);
+                    })
+        }else{
+            return;
+        }
     }
 }

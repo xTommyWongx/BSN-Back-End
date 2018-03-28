@@ -23,8 +23,8 @@ export default class UserService {
             .update(modifier);
     }
 
-    dashboard(req: Request, res: Response){
-
+    dashboard(id: number){
+       
     }
     teamsList(req: Request, res: Response){
 
