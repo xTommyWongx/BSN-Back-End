@@ -47,7 +47,7 @@ export default class UserRouter {
         // console.log(req.user)
         if (req.user) {
             return this.userService.getProfile(req.user.id)
-                .then(data => res.json(data))
+                .then(data => res.json(data[0]))
                 .catch(err => res.status(500).json(err));
         } else {
             return -1;
@@ -63,6 +63,7 @@ export default class UserRouter {
     }
 
     patch = (req: Request, res: Response) => {
+        console.log(req.body);
         if (req.user) {
             return this.userService.editProfile(req.user.id, req.body)
                 .then(data => res.json(data))

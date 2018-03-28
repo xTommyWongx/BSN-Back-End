@@ -8,12 +8,13 @@ declare module Models{
     }
 
     interface Profile{
-        firstName: string,
-        lastName: string,
+        firstname: string,
+        lastname: string,
+        position: string,
         location: string,
         status: string,
         image?: string,
-        teamName?: string,
+        teamname?: string,
         // teamLogo?: string
     }
     interface SignUpUser {
