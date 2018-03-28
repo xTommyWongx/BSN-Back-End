@@ -2,6 +2,7 @@ import { Router } from 'express';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
+
 import * as Knex from 'knex';
 
 const NODE_ENV = process.env.NODE_ENV || 'development';
@@ -33,9 +34,9 @@ import initapp from './utils/init-app';
 const {app, auth} = initapp(knex);
 
 app.use('/api/users', auth.authenticate(), new UserRouter(userService).router()); // users commom functions
-app.use('/api/players', new PlayerRouter(playerService).router());  // specific to player fuctions
-app.use('/api/managers', new ManagerRouter(managerService).router()); // specific to manager functions
-app.use('/api/organizers', new OrganizerRouter(organizerService).router()); // specific to organizer functions
+app.use('/api/players',auth.authenticate(), new PlayerRouter(playerService).router());  // specific to player fuctions
+app.use('/api/managers',auth.authenticate(), new ManagerRouter(managerService).router()); // specific to manager functions
+app.use('/api/organizers',auth.authenticate(), new OrganizerRouter(organizerService).router()); // specific to organizer functions
 app.use('/api/auth', new AuthRouter(authService).router()); //login and registration of users
 
 app.listen(port, () => {

@@ -21,14 +21,21 @@ export default class UserRouter {
         return router;
     }
 
-    // arrow function: refers to it's current surrounding scope and no further -> that's why we dun need bind(this)
-    // function declaration: inner function 
-
     getProfile = (req: Request, res: Response) => {
 
     }
     dashboard = (req: Request, res: Response) => {
-        
+        if (req.user) {
+            console.log("req.user ", req.user);
+            if (req.user.status === "organizer") {
+                
+
+            } else if (req.user.status === "manager") {
+
+            } else if (req.user.status === "player"){
+
+            }
+        } 
     }
     teamsList = (req: Request, res: Response) => {
 
