@@ -62,7 +62,7 @@ export default class AuthRouter {
                             res.json({
                                 success: true,
                                 token: token,
-                                user: user[0]
+                                status: user[0].status
                             })
                         }
                     })
