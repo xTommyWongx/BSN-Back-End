@@ -10,4 +10,14 @@ export default class PlayerService {
     joinTeam = (req: Request, res: Response)=>{
 
     }
+    getRequests = (player_id:number) => {
+        return this.knex('requests').select()
+                        .where({
+                            player_id: player_id,
+                            request_to_player: true
+                        })
+                        .innerJoin('users','users.user_id','manager_id')
+                        // .innerJoin('teams','teams.team_id','users.user_id');
+                        
+    }
 }

@@ -10,8 +10,10 @@ export default class UserService {
     }
 
     getProfile(userId:number){
-        return this.knex.select('firstname', 'lastname', 'location', 'status', 'image', 'team_id')
+        console.log('getProfile')
+        return this.knex.select('firstname', 'lastname', 'position', 'location', 'status', 'image', 'teamname')
             .from('users')
+            .leftJoin('teams', 'users.team_id', '=', 'teams.team_id')
             .where('user_id',userId);
     }
 
@@ -21,8 +23,8 @@ export default class UserService {
             .update(modifier);
     }
 
-    dashboard(req: Request, res: Response){
-
+    dashboard(id: number){
+       
     }
     teamsList(req: Request, res: Response){
 

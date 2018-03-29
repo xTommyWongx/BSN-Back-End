@@ -12,10 +12,11 @@ export default  (app:express.Application, knex: Knex)=>{
         secretOrKey: config.jwtSecret,
         jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken()
     },async (payload,done)=>{
-        // const user = await knex.select().from[payload.id];
         const user = await knex.select().table('users').where(payload);
         if (user) {
-            return done(null, {id: user[0].user_id});
+            return done(null, { id: user[0].user_id,
+                                team_id: user[0].team_id,
+                                 status: user[0].status});
         } else {
             return done(new Error("User not found"), null);
         }

@@ -57,6 +57,6 @@ export default class AuthService {
     // separated to catch the errors that might occer during insert
     register(hash:any, user:Models.SignUpUser){
         user.password = hash;
-        return this.knex('user').insert(user);
+        return this.knex('users').insert(user);
     }
 }
