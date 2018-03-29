@@ -14,6 +14,7 @@ declare module Models{
         location: string,
         status: string,
         image?: string,
+        team_id?: number,
         teamname?: string,
         // teamLogo?: string
     }
