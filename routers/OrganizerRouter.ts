@@ -16,7 +16,7 @@ export default class OrganizerRouter {
     private index = async (req: Request, res: Response) => {
         try {
             const result = await this.organizerService.index()
-            res.json({success: true, result: result});
+            res.json(result);
         }
         catch (err) {
             res.sendStatus(500);
@@ -27,7 +27,7 @@ export default class OrganizerRouter {
     // create tournament 
     private create = async (req: Request, res: Response) => {
         try {
-            await this.organizerService.create(req.body);
+            await this.organizerService.create(req.body.tournamentFormValue);
             res.json({success: true});
         }
         catch (err) {
