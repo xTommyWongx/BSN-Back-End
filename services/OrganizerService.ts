@@ -18,19 +18,19 @@ export default class OrganizerService {
     
     //create tournament    
     //haven't stored organizer_id, need to get the id from front end
-    create(reqBody: Models.PostTournamentBody) {
+    create(formData: Models.PostTournamentBody) {
         return this.knex.transaction(async (trx) => {
             try {
                 const tournamentId = await trx
                     .insert({
-                        category: reqBody.category,
-                        number_of_teams: reqBody.number_of_teams,
-                        game_size: reqBody.game_size,
-                        // organizer_id: reqBody.organizer_id,
-                        tournament_name: reqBody.tournament_name,
-                        runnerup_prize: reqBody.runnerup_prize,
-                        winner_prize: reqBody.winner_prize,
-                        entry_fee: reqBody.entry_fee
+                        category: formData.category,
+                        number_of_teams: formData.number_of_teams,
+                        game_size: formData.game_size,
+                        // organizer_id: formData.organizer_id,
+                        tournament_name: formData.tournament_name,
+                        runnerup_prize: formData.runnerup_prize,
+                        winner_prize: formData.winner_prize,
+                        entry_fee: formData.entry_fee
                     })
                     .into("tournaments")
                     .returning("tournament_id")
@@ -38,8 +38,8 @@ export default class OrganizerService {
         
                 return await trx
                     .insert({
-                        date: reqBody.date,
-                        location: reqBody.location,
+                        date: formData.date,
+                        location: formData.location,
                         tournament_id: tournamentId[0]
                     })
                     .into("tournaments_dates_location")
