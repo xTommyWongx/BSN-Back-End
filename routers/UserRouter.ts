@@ -28,14 +28,52 @@ export default class UserRouter {
         if (req.user) {
             console.log("req.user ", req.user);
             if (req.user.status === "organizer") {
-                
-
+                return;//todo organizer info
             } else if (req.user.status === "manager") {
+                console.log("manager");
+                if (req.user.team_id !== null) {//if manager has team
+                    return this.userService.dashboardWithTeam(req.user.id)
+                        .then((info) => {
+                            console.log("info",info);
+                            res.json(info[0]);
+                        }).catch(err => {
+                            console.log(err);
+                            res.send(err);
+                        })
+                }else{// if manager doesn't have the team
+                    console.log("no team");
+                    return this.userService.dashboardNoTeam(req.user.id)
+                        .then((info)=>{
+                            console.log("info", info);
+                            res.json(info[0]);
+                        }).catch(err=>{
+                            console.log(err);
+                            res.send(err);
+                        })
+                }
 
-            } else if (req.user.status === "player"){
-
+            } else if (req.user.status === "player") {
+                if (req.user.team_id !== null) {//if player has team
+                    return this.userService.dashboardWithTeam(req.user.id)
+                        .then((info) => {
+                            res.json(info[0]);
+                        }).catch(err => {
+                            console.log(err);
+                            res.send(err);
+                        })
+                }else{// if player doesn't have the team
+                    return this.userService.dashboardNoTeam(req.user.id)
+                        .then((info)=>{
+                            res.json(info[0]);
+                        }).catch(err=>{
+                            console.log(err);
+                            res.send(err);
+                        })
+                }
             }
-        } 
+        }else {
+            return;
+        }
     }
     teamsList = (req: Request, res: Response) => {
 

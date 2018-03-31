@@ -45,4 +45,10 @@ declare module Models{
         date: string;
         location: string;
     } 
+
+    // create team
+    interface Team {
+        clubName: string,
+        numberOfPlayers: number
+    }
 }

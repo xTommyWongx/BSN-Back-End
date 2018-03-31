@@ -62,10 +62,10 @@ export default class AuthRouter {
                             res.json({
                                 success: true,
                                 token: token,
-                                user: {
-                                    status: user[0].status,
-                                    team_id: user[0].team_id
-                                } 
+                                // user: {
+                                //     status: user[0].status,
+                                //     team_id: user[0].team_id
+                                // } 
                             })
                         }
                     })
