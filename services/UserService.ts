@@ -11,7 +11,7 @@ export default class UserService {
 
     getProfile(userId:number){
         console.log('getProfile')
-        return this.knex.select('firstname', 'lastname', 'position', 'location', 'status', 'image', 'teamname')
+        return this.knex.select('firstname', 'lastname', 'position', 'location', 'status', 'image', 'users.team_id', 'teamname')
             .from('users')
             .leftJoin('teams', 'users.team_id', '=', 'teams.team_id')
             .where('user_id',userId);
@@ -34,12 +34,19 @@ export default class UserService {
         return this.knex.select().from('users')
                     .where('user_id',id);
     }
+
+    teamDetails(userId:number){
+        return this.knex.select('*')
+            .from('teams')
+            .innerJoin('users','teams.team_id', '=', 'users.team_id')
+            .where('user_id',userId);
+    }
+
+    
     teamsList(req: Request, res: Response){
 
     }
-    teamDetails(req: Request, res: Response){
-
-    }
+    
     tournamentsList(req: Request, res: Response){
 
     }
