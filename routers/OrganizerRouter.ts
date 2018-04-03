@@ -7,6 +7,7 @@ export default class OrganizerRouter {
     router():Router {
         let router:Router = Router();
         router.get('/tournament', this.index);
+        router.get('/tournament/:id', this.get);
         router.post('/tournament', this.create);
         router.put('/tournament/:id', this.update);
         router.delete('/tournament/:id', this.delete);
@@ -17,20 +18,32 @@ export default class OrganizerRouter {
     // get all tournament post
     private index = async (req: Request, res: Response) => {
         try {
-            const result = await this.organizerService.index()
+            let result = await this.organizerService.index();
             res.json(result);
         }
         catch (err) {
             res.sendStatus(500);
         }
-        
+    }
+
+    // get single tournament
+    private get = async (req: Request, res: Response) => {
+        try {
+            let result = await this.organizerService.get(req.params.id);
+            res.json(result);
+        }
+        catch (err) {
+            res.sendStatus(500);
+        }
     }
 
     // create tournament 
     private create = async (req: Request, res: Response) => {
         try {
-            await this.organizerService.create(req.body.tournamentFormValue);
-            res.json({success: true});
+            if(req.user) {
+                await this.organizerService.create(req.user.id, req.body.tournamentFormValue);
+                res.json({success: true});
+            }
         }
         catch (err) {
             res.sendStatus(500);

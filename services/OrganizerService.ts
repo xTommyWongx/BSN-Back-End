@@ -4,21 +4,26 @@ export default class OrganizerService {
     constructor(private knex: Knex){ }
 
     // get all tournament post
-    async index() {
-        try {
-            return await this.knex
-                .select()
-                .from('tournaments')
-                .innerJoin('tournaments_dates_location', 'tournaments_dates_location.tournament_id', 'tournaments.tournament_id')
-        }
-        catch (err){
-            throw err;
-        }
+    index() {
+        return this.knex
+            .select()
+            .from('tournaments')
+            .innerJoin('tournaments_dates_location', 'tournaments_dates_location.tournament_id', 'tournaments.tournament_id')
+    }
+
+    //get single tournament
+    get(id: number) {
+        return this.knex
+            .select()
+            .from('tournaments')
+            .innerJoin('tournaments_dates_location', 'tournaments_dates_location.tournament_id', 'tournaments.tournament_id')
+            .where('tournaments.tournament_id', id)
+            // .innerJoin('league_table', 'league_table.tournament_id', 'tournaments.tournament_id')
+            // .leftOuterJoin('league_table', 'league_table.tournament_id', 'tournaments.tournament_id')
     }
     
     //create tournament    
-    //haven't stored organizer_id, need to get the id from front end
-    create(formData: Models.PostTournamentBody) {
+    create(organizerId: number, formData: Models.PostTournamentBody) {
         return this.knex.transaction(async (trx) => {
             try {
                 const tournamentId = await trx
@@ -26,7 +31,7 @@ export default class OrganizerService {
                         category: formData.category,
                         number_of_teams: formData.number_of_teams,
                         game_size: formData.game_size,
-                        // organizer_id: formData.organizer_id,
+                        organizer_id: organizerId,
                         tournament_name: formData.tournament_name,
                         runnerup_prize: formData.runnerup_prize,
                         winner_prize: formData.winner_prize,
@@ -50,7 +55,6 @@ export default class OrganizerService {
         })
     }
 
-    //haven't stored organizer_id, need to get the id from front end
     update(tournamentId: number, formData: Models.PostTournamentBody) {
         return this.knex.transaction(async (trx) => {
             try {
@@ -62,7 +66,6 @@ export default class OrganizerService {
                         category: formData.category,
                         number_of_teams: formData.number_of_teams,
                         game_size: formData.game_size,
-                        // organizer_id: formData.organizer_id,
                         tournament_name: formData.tournament_name,
                         runnerup_prize: formData.runnerup_prize,
                         winner_prize: formData.winner_prize,
