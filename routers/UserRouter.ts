@@ -14,16 +14,12 @@ export default class UserRouter {
         router.get('/tournaments', this.tournamentsList); //send all tournaments list
         router.get('/tournament/:id', this.tournamentDetail); //send tournament details
 
-        router.get('/', this.get)
-        router.post('/', this.post);
-        router.patch('/', this.patch);
-
+        router.get('/', this.getProfile);
+        router.patch('/', this.editProfile);
+        
         return router;
     }
 
-    getProfile = (req: Request, res: Response) => {
-
-    }
     dashboard = (req: Request, res: Response) => {
         if (req.user) {
             console.log("req.user ", req.user);
@@ -50,7 +46,7 @@ export default class UserRouter {
 
     }
 
-    get = (req: Request, res: Response) => {
+    getProfile = (req: Request, res: Response) => {
         // console.log(req.user)
         if (req.user) {
             return this.userService.getProfile(req.user.id)
@@ -61,15 +57,15 @@ export default class UserRouter {
         }
     }
 
-    post = (req: Request, res: Response) => {
-        const body: Models.BasicUserInforamtion = req.body;
+    // post = (req: Request, res: Response) => {
+    //     const body: Models.BasicUserInforamtion = req.body;
 
-        return this.userService.createNewInformation(body)
-            .then(data => res.json(data))
-            .catch(err => res.status(500).json(err));
-    }
+    //     return this.userService.createNewInformation(body)
+    //         .then(data => res.json(data))
+    //         .catch(err => res.status(500).json(err));
+    // }
 
-    patch = (req: Request, res: Response) => {
+    editProfile = (req: Request, res: Response) => {
         console.log(req.body);
         if (req.user) {
             return this.userService.editProfile(req.user.id, req.body)
