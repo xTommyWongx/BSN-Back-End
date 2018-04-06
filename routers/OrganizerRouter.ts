@@ -8,6 +8,8 @@ export default class OrganizerRouter {
         let router:Router = Router();
         router.get('/tournament', this.index);
         router.post('/tournament', this.create);
+        router.put('/tournament/:id', this.update);
+        router.delete('/tournament/:id', this.delete);
 
         return router;
     }
@@ -31,6 +33,28 @@ export default class OrganizerRouter {
             res.json({success: true});
         }
         catch (err) {
+            res.sendStatus(500);
+        }
+    }
+
+    // update tournament 
+    private update = async (req: Request, res: Response) => {
+        try {
+            await this.organizerService.update(req.params.id, req.body.updateFormData);
+            res.json({success: true});
+        }
+        catch (err) {
+            res.sendStatus(500);
+        }
+    }
+
+    private delete = async (req: Request, res: Response) => {
+        try {
+            await this.organizerService.delete(req.params.id);
+            res.json({success: true});
+        }
+        catch (err) {
+            console.log(err)
             res.sendStatus(500);
         }
     }

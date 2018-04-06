@@ -49,4 +49,59 @@ export default class OrganizerService {
             }
         })
     }
+
+    //haven't stored organizer_id, need to get the id from front end
+    update(tournamentId: number, formData: Models.PostTournamentBody) {
+        return this.knex.transaction(async (trx) => {
+            try {
+                await trx
+                    .select()
+                    .from('tournaments')
+                    .where('tournaments.tournament_id', tournamentId)
+                    .update({
+                        category: formData.category,
+                        number_of_teams: formData.number_of_teams,
+                        game_size: formData.game_size,
+                        // organizer_id: formData.organizer_id,
+                        tournament_name: formData.tournament_name,
+                        runnerup_prize: formData.runnerup_prize,
+                        winner_prize: formData.winner_prize,
+                        entry_fee: formData.entry_fee
+                    })
+        
+                await trx
+                    .select()
+                    .from('tournaments_dates_location')
+                    .where('tournaments_dates_location.tournament_id', tournamentId)
+                    .update({
+                        date: formData.date,
+                        location: formData.location,
+                    })
+            }
+            catch (err) {
+                throw err;
+            }
+         })
+    }
+
+    delete(id: number) {
+        return this.knex.transaction(async (trx) => {
+            try {
+                await trx
+                    .select()
+                    .from('tournaments_dates_location')
+                    .where('tournaments_dates_location.tournament_id', id)
+                    .del()
+            
+                 await trx
+                    .select()
+                    .from('tournaments')
+                    .where('tournaments.tournament_id', id)
+                    .del()
+            }
+            catch (err) {
+                throw err;
+            }
+        })
+    }
 }
