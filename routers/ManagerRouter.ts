@@ -116,6 +116,7 @@ export default class ManagerRouter {
         if(req.user){
             return this.managerService.getRequests(req.user.id)
                 .then(requests => {
+                    console.log("requests..",requests)
                     res.json(requests);
                 }).catch(err => {
                     console.log(err);

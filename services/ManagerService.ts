@@ -71,11 +71,11 @@ export default class ManagerService {
     }
     getRequests = (manager_id:number)=>{
         
-        return this.knex('requests')
+        return this.knex('requests').select()
             .innerJoin('users','users.user_id','player_id')
             .where({
                 manager_id: manager_id,
                 request_to_manager: true
-            });
+            })
         }
 }
