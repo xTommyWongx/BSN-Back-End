@@ -6,11 +6,12 @@ export default class OrganizerRouter {
     
     router():Router {
         let router:Router = Router();
-        router.get('/tournament', this.index);
-        router.get('/tournament/:id', this.get);
-        router.post('/tournament', this.create);
-        router.put('/tournament/:id', this.update);
-        router.delete('/tournament/:id', this.delete);
+        router.get('/tournament', this.index); // get all tournaments
+        router.get('/tournament/:id', this.get); // get single tournament
+        // router.get('tournament/:id/fixture', this.getFixture)  get tournament fixture
+        router.post('/tournament', this.create); // post tournament
+        router.put('/tournament/:id', this.update); // update tournament
+        router.delete('/tournament/:id', this.delete); // delete tournament
 
         return router;
     }
@@ -33,6 +34,7 @@ export default class OrganizerRouter {
             res.json(result);
         }
         catch (err) {
+            console.log(err)
             res.sendStatus(500);
         }
     }
@@ -61,6 +63,7 @@ export default class OrganizerRouter {
         }
     }
 
+    //delete tournament
     private delete = async (req: Request, res: Response) => {
         try {
             await this.organizerService.delete(req.params.id);
@@ -71,4 +74,10 @@ export default class OrganizerRouter {
             res.sendStatus(500);
         }
     }
+
+    // private getFixture = async (req: Request, res: Response) => {
+    //     try {
+    //         await this.organizerService.getFixture(req.params)
+    //     }
+    // }
 }

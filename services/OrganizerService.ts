@@ -2,7 +2,6 @@ import * as Knex from 'knex';
 
 export default class OrganizerService {
     constructor(private knex: Knex){ }
-
     // get all tournament post
     index() {
         return this.knex
@@ -12,14 +11,12 @@ export default class OrganizerService {
     }
 
     //get single tournament
-    get(id: number) {
+    async get(id: number) {
         return this.knex
             .select()
             .from('tournaments')
             .innerJoin('tournaments_dates_location', 'tournaments_dates_location.tournament_id', 'tournaments.tournament_id')
             .where('tournaments.tournament_id', id)
-            // .innerJoin('league_table', 'league_table.tournament_id', 'tournaments.tournament_id')
-            // .leftOuterJoin('league_table', 'league_table.tournament_id', 'tournaments.tournament_id')
     }
     
     //create tournament    
@@ -55,6 +52,7 @@ export default class OrganizerService {
         })
     }
 
+    // update tournament
     update(tournamentId: number, formData: Models.PostTournamentBody) {
         return this.knex.transaction(async (trx) => {
             try {
@@ -87,6 +85,7 @@ export default class OrganizerService {
          })
     }
 
+    //delete tournament
     delete(id: number) {
         return this.knex.transaction(async (trx) => {
             try {
@@ -106,5 +105,35 @@ export default class OrganizerService {
                 throw err;
             }
         })
+    }
+
+    // get tournament for fixture
+    async getFixture(id: number) {
+
+        try {
+            let result = await this.knex.select()
+            .from('tournaments')
+            .where('tournaments.tournament_id', id)
+            .leftOuterJoin('league_table', 'tournaments.tournament_id', 'league_table.tournament_id')
+            .leftOuterJoin('fixtures', 'fixtures.tournament', 'tournaments.tournament_id')
+            .leftOuterJoin('teams', 'teams.team_id', 'league_table.team_id')
+            
+            return result;   
+            
+            // let result = await this.knex.select('tournaments.tournament_id',' league_table.*')
+            
+            // let result =  await this.knex.raw(`
+                // SELECT * 
+                // FROM "tournaments"
+                // LEFT JOIN league_table ON league_table.tournament_id = tournaments.tournament_id 
+                // LEFT JOIN fixtures ON fixtures.tournament = tournaments.tournament_id
+                // LEFT JOIN teams ON teams.team_id = league_table.team_id
+                // WHERE tournaments.tournament_id = 22;
+            // `)
+
+        }
+        catch (err) {
+            throw err;
+        }
     }
 }
