@@ -108,17 +108,15 @@ export default class OrganizerService {
     }
 
     // get tournament for fixture
-    async getFixture(id: number) {
-
-        try {
-            let result = await this.knex.select()
-            .from('tournaments')
-            .where('tournaments.tournament_id', id)
-            .leftOuterJoin('league_table', 'tournaments.tournament_id', 'league_table.tournament_id')
-            .leftOuterJoin('fixtures', 'fixtures.tournament', 'tournaments.tournament_id')
-            .leftOuterJoin('teams', 'teams.team_id', 'league_table.team_id')
+    // async getFixture(id: number) {
+    //     try {
+    //         let result = await this.knex.select()
+    //             .from('tournaments')
+    //             .where('tournaments.tournament_id', id)
+    //             .leftOuterJoin('tournaments_teams', 'tournaments.tournament_id', 'tournaments_teams.tournament_id')
+    //             .leftOuterJoin('teams', 'tournaments_teams.team_id', 'teams.team_id')
             
-            return result;   
+    //         return result;   
             
             // let result = await this.knex.select('tournaments.tournament_id',' league_table.*')
             
@@ -131,9 +129,9 @@ export default class OrganizerService {
                 // WHERE tournaments.tournament_id = 22;
             // `)
 
-        }
-        catch (err) {
-            throw err;
-        }
-    }
+    //     }
+    //     catch (err) {
+    //         throw err;
+    //     }
+    // }
 }

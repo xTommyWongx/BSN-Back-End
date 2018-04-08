@@ -8,7 +8,7 @@ export default class OrganizerRouter {
         let router:Router = Router();
         router.get('/tournament', this.index); // get all tournaments
         router.get('/tournament/:id', this.get); // get single tournament
-        // router.get('tournament/:id/fixture', this.getFixture)  get tournament fixture
+        router.get('tournament/:id/fixture', this.getFixture)  //get tournament fixture
         router.post('/tournament', this.create); // post tournament
         router.put('/tournament/:id', this.update); // update tournament
         router.delete('/tournament/:id', this.delete); // delete tournament
@@ -70,14 +70,17 @@ export default class OrganizerRouter {
             res.json({success: true});
         }
         catch (err) {
-            console.log(err)
             res.sendStatus(500);
         }
     }
 
     // private getFixture = async (req: Request, res: Response) => {
     //     try {
-    //         await this.organizerService.getFixture(req.params)
+    //         await this.organizerService.getFixture(req.params.id);
+    //         res.json({success: true});
+    //     }
+    //     catch (err) {
+    //         res.sendStatus(500);
     //     }
     // }
 }
