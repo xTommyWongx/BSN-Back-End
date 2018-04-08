@@ -4,8 +4,9 @@ export default class PlayerService {
     constructor(private knex: Knex){
 
     }
-    leaveTeam = ()=>{
-
+    leaveTeam = (player_id:number)=>{
+        return this.knex('users').update({team_id: null})
+                        .where('user_id', player_id);
     }
     joinTeam = ()=>{
 
