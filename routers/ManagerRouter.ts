@@ -55,7 +55,19 @@ export default class ManagerRouter {
 
     }
     createTeam = (req: Request, res: Response) => {
-
+        console.log(req.body,"create");
+        if(req.user){
+            return this.managerService.createTeam(req.user.id, req.body)
+                    .then(()=>{
+                        console.log("last")
+                        res.send();
+                    }).catch(err=>{
+                        console.log(err);
+                    })
+        }else{
+            return;
+        }
+        // return this.managerService.createTeam
     }
     join_tournament = (req: Request, res: Response) => {
 
@@ -104,6 +116,7 @@ export default class ManagerRouter {
         if(req.user){
             return this.managerService.getRequests(req.user.id)
                 .then(requests => {
+                    console.log("requests..",requests)
                     res.json(requests);
                 }).catch(err => {
                     console.log(err);

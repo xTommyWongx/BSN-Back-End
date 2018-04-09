@@ -1,5 +1,5 @@
-declare module Models{
-    interface BasicUserInforamtion{
+declare module Models {
+    interface BasicUserInforamtion {
         firstname: string, //facebook 
         lastname: string, //facebook 
         location: string, //user input
@@ -7,7 +7,7 @@ declare module Models{
         image?: string
     }
 
-    interface Profile{
+    interface Profile {
         firstname: string,
         lastname: string,
         position: string,
@@ -45,9 +45,9 @@ declare module Models{
         entry_fee: string;
         date: string;
         location: string;
-    } 
+    }
 
-    interface TeamInformation{
+    interface TeamInformation {
         teamname: string;
         numberOfPlayers: number;
         logo?: string;
@@ -55,14 +55,14 @@ declare module Models{
         manager_lastname: string;
     }
 
-    interface TeamSquad{
+    interface TeamSquad {
         position: string;
         firstname: string;
         lastname: string;
         image?: string;
     }
 
-    interface TeamFixtures{
+    interface TeamFixtures {
         tournament_name: string;
         opponent_teamname: string;
         opponent_logo?: string;
@@ -73,10 +73,26 @@ declare module Models{
         street: string;
     }
 
-    interface TournamentFixture {
+    interface AddTournamentFixture {
         home_team: string;
         away_team: string;
         venue: string;
         date: Date;
+    }
+    
+    interface TournamentFixtures {
+        tournament_id: number;
+        tournament_name: string;
+        fixture_id: number;
+        home_team_id: number;
+        home_teamname: string;
+        home_logo: string;
+        away_team_id: number;
+        away_teamname: string;
+        away_logo: string;
+        date: Date;
+        park_name: string;
+        district: string;
+        street: string;
     }
 }

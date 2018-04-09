@@ -110,7 +110,7 @@ export default class OrganizerService {
     // get tournament for fixture
     getFixture(tournamentId: number) {
         try {
-            return this.knex.select('t.tournament_name','home_team.teamname as home_teamname', 'home_team.logo as home_logo', 'away_team.teamname as away_teamname', 'away_team.logo as away_logo', 'f.date', 'v.park_name', 'v.district', 'v.street')
+            return this.knex.select('t.tournament_id', 't.tournament_name', 'f.fixture_id', 'home_team.team_id as home_team_id', 'home_team.teamname as home_teamname', 'home_team.logo as home_logo', 'away_team.team_id as away_team_id', 'away_team.teamname as away_teamname', 'away_team.logo as away_logo', 'f.date', 'v.park_name', 'v.district', 'v.street')
                 .from('fixtures as f')
                 .innerJoin('tournaments as t', 'f.tournament', 't.tournament_id')
                 .innerJoin('venue as v', 'f.venue', 'v.venue_id')
@@ -143,7 +143,7 @@ export default class OrganizerService {
     }
 
     // add fixture to tournament
-    addFixture(id: number, fixtureData: Models.TournamentFixture) {
+    addFixture(id: number, fixtureData: Models.AddTournamentFixture) {
         try {
             return this.knex.insert({
                 tournament: id,
@@ -156,5 +156,46 @@ export default class OrganizerService {
         catch (err) {
             throw err;
         }
+    }
+
+    updateScore(fixture: Models.TournamentFixtures, score: { home_score: number, away_score: number }) {
+        return this.knex.transaction(async trx => {
+            try {
+                let homePoints = this.calculatePoints(+score.home_score, +score.away_score);
+                let homeGoalDifference = this.goalDifference(+score.home_score, +score.away_score);
+                let awayPoints = this.calculatePoints(+score.away_score, +score.home_score);
+                let awayGoalDifference = this.goalDifference(+score.away_score, +score.home_score);
+
+                await trx.update(score)
+                    .from('fixtures')
+                    .where('fixture_id', fixture.fixture_id)
+                // .returning('fixture_id')
+
+                await trx.raw(`
+                    INSERT INTO league_table (tournament_id, fixture_id, team_id, points, goals_scored, goals_conceded, goal_difference) 
+                    VALUES (${fixture.tournament_id}, ${fixture.fixture_id}, ${fixture.home_team_id}, ${homePoints}, ${+score.home_score}, ${+score.away_score}, ${homeGoalDifference})
+                    ON CONFLICT ON CONSTRAINT fixture_id_team_id_unqiue DO UPDATE
+                    SET goals_scored = ${score.home_score}, goals_conceded = ${score.away_score}, goal_difference = ${homeGoalDifference}, points = ${homePoints};`
+                )
+
+                await trx.raw(`
+                    INSERT INTO league_table (tournament_id, fixture_id, team_id, points, goals_scored, goals_conceded, goal_difference) 
+                    VALUES (${fixture.tournament_id}, ${fixture.fixture_id}, ${fixture.away_team_id}, ${awayPoints}, ${+score.away_score}, ${+score.home_score}, ${awayGoalDifference})
+                    ON CONFLICT ON CONSTRAINT fixture_id_team_id_unqiue DO UPDATE
+                    SET goals_scored = ${score.away_score}, goals_conceded = ${score.home_score}, goal_difference = ${awayGoalDifference}, points = ${awayPoints};`
+                )
+            }
+            catch (err) {
+                throw err
+            }
+        })
+    }
+
+    calculatePoints(ownScore: number, opponentScore: number) {
+        return ((ownScore > opponentScore) ? 3 : ((ownScore < opponentScore) ? 0 : 1));
+    }
+
+    goalDifference(ownScore: number, opponentScore: number){
+        return ownScore - opponentScore;
     }
 }

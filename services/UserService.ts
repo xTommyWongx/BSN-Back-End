@@ -23,6 +23,18 @@ export default class UserService {
             .update(modifier);
     }
 
+    dashboardWithTeam(id: number){
+       return this.knex.select().from('users')
+                    .where('user_id',id)
+                    .innerJoin('teams','teams.team_id','users.team_id');
+    }
+
+    dashboardNoTeam(id: number){
+        console.log("id",id);
+        return this.knex.select().from('users')
+                    .where('user_id',id);
+    }
+
     teamDetails(userId:number){
         return this.knex.select('*')
             .from('teams')
@@ -30,9 +42,7 @@ export default class UserService {
             .where('user_id',userId);
     }
 
-    dashboard(id: number){
-       
-    }
+    
     teamsList(req: Request, res: Response){
 
     }

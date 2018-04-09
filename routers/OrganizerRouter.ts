@@ -14,6 +14,7 @@ export default class OrganizerRouter {
         router.get('/tournament/:id/fixture', this.getFixture)  //get tournament fixture
         router.get('/tournament/:id/getteaminfo', this.getTeamInfo) // get team who joint the tournament for fixture
         router.post('/tournament/:id/addfixture', this.addTournamentFixture) // add fixture to tournament
+        router.post('/tournament/updateScore', this.updateScore);
 
         return router;
     }
@@ -110,4 +111,10 @@ export default class OrganizerRouter {
         }
     }
 
+    private updateScore = (req: Request, res: Response) => {
+        console.log(req.body);
+        return this.organizerService.updateScore(req.body.fixture, req.body.score)
+            .then(data => res.json(data))
+            .catch(err => res.status(500).json(err));
+    }
 }
