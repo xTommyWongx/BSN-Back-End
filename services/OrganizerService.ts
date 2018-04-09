@@ -1,7 +1,7 @@
 import * as Knex from 'knex';
 
 export default class OrganizerService {
-    constructor(private knex: Knex){ }
+    constructor(private knex: Knex) { }
     // get all tournament post
     index() {
         return this.knex
@@ -11,14 +11,14 @@ export default class OrganizerService {
     }
 
     //get single tournament
-    async get(id: number) {
+    get(id: number) {
         return this.knex
             .select()
             .from('tournaments')
             .innerJoin('tournaments_dates_location', 'tournaments_dates_location.tournament_id', 'tournaments.tournament_id')
             .where('tournaments.tournament_id', id)
     }
-    
+
     //create tournament    
     create(organizerId: number, formData: Models.PostTournamentBody) {
         return this.knex.transaction(async (trx) => {
@@ -37,7 +37,7 @@ export default class OrganizerService {
                     .into("tournaments")
                     .returning("tournament_id")
 
-        
+
                 return await trx
                     .insert({
                         date: formData.date,
@@ -69,7 +69,7 @@ export default class OrganizerService {
                         winner_prize: formData.winner_prize,
                         entry_fee: formData.entry_fee
                     })
-        
+
                 await trx
                     .select()
                     .from('tournaments_dates_location')
@@ -82,7 +82,7 @@ export default class OrganizerService {
             catch (err) {
                 throw err;
             }
-         })
+        })
     }
 
     //delete tournament
@@ -94,8 +94,8 @@ export default class OrganizerService {
                     .from('tournaments_dates_location')
                     .where('tournaments_dates_location.tournament_id', id)
                     .del()
-            
-                 await trx
+
+                await trx
                     .select()
                     .from('tournaments')
                     .where('tournaments.tournament_id', id)
@@ -108,30 +108,53 @@ export default class OrganizerService {
     }
 
     // get tournament for fixture
-    // async getFixture(id: number) {
-    //     try {
-    //         let result = await this.knex.select()
-    //             .from('tournaments')
-    //             .where('tournaments.tournament_id', id)
-    //             .leftOuterJoin('tournaments_teams', 'tournaments.tournament_id', 'tournaments_teams.tournament_id')
-    //             .leftOuterJoin('teams', 'tournaments_teams.team_id', 'teams.team_id')
-            
-    //         return result;   
-            
-            // let result = await this.knex.select('tournaments.tournament_id',' league_table.*')
-            
-            // let result =  await this.knex.raw(`
-                // SELECT * 
-                // FROM "tournaments"
-                // LEFT JOIN league_table ON league_table.tournament_id = tournaments.tournament_id 
-                // LEFT JOIN fixtures ON fixtures.tournament = tournaments.tournament_id
-                // LEFT JOIN teams ON teams.team_id = league_table.team_id
-                // WHERE tournaments.tournament_id = 22;
-            // `)
+    getFixture(tournamentId: number) {
+        try {
+            return this.knex.select('t.tournament_name','home_team.teamname as home_teamname', 'home_team.logo as home_logo', 'away_team.teamname as away_teamname', 'away_team.logo as away_logo', 'f.date', 'v.park_name', 'v.district', 'v.street')
+                .from('fixtures as f')
+                .innerJoin('tournaments as t', 'f.tournament', 't.tournament_id')
+                .innerJoin('venue as v', 'f.venue', 'v.venue_id')
+                .innerJoin('teams as home_team', 'f.home_team', 'home_team.team_id')
+                .innerJoin('teams as away_team', 'f.away_team', 'away_team.team_id')
+                .where('f.tournament', tournamentId)
+                .orderBy('f.date')
+        }
+        catch (err) {
+            throw err;
+        }
+    }
 
-    //     }
-    //     catch (err) {
-    //         throw err;
-    //     }
-    // }
+    // get teams who joint the tournament for fixture
+    async getTeamInfo(id: number) {
+        try {
+            const venues = await this.knex.select().from('venue');
+            const teams = await this.knex
+                .select("teams.team_id", "teams.teamname")
+                .from('tournaments_teams as t_team')
+                .innerJoin('teams', 't_team.team_id', 'teams.team_id')
+                .where('t_team.tournament_id', id)
+
+            return {venues, teams};
+
+        }
+        catch (err) {
+            throw err;
+        }
+    }
+
+    // add fixture to tournament
+    addFixture(id: number, fixtureData: Models.TournamentFixture) {
+        try {
+            return this.knex.insert({
+                tournament: id,
+                home_team: fixtureData.home_team,
+                away_team: fixtureData.away_team,
+                venue: fixtureData.venue,
+                date: fixtureData.date
+            }).into('fixtures')
+        }
+        catch (err) {
+            throw err;
+        }
+    }
 }

@@ -8,10 +8,12 @@ export default class OrganizerRouter {
         let router:Router = Router();
         router.get('/tournament', this.index); // get all tournaments
         router.get('/tournament/:id', this.get); // get single tournament
-        router.get('tournament/:id/fixture', this.getFixture)  //get tournament fixture
         router.post('/tournament', this.create); // post tournament
         router.put('/tournament/:id', this.update); // update tournament
         router.delete('/tournament/:id', this.delete); // delete tournament
+        router.get('/tournament/:id/fixture', this.getFixture)  //get tournament fixture
+        router.get('/tournament/:id/getteaminfo', this.getTeamInfo) // get team who joint the tournament for fixture
+        router.post('/tournament/:id/addfixture', this.addTournamentFixture) // add fixture to tournament
 
         return router;
     }
@@ -74,13 +76,38 @@ export default class OrganizerRouter {
         }
     }
 
-    // private getFixture = async (req: Request, res: Response) => {
-    //     try {
-    //         await this.organizerService.getFixture(req.params.id);
-    //         res.json({success: true});
-    //     }
-    //     catch (err) {
-    //         res.sendStatus(500);
-    //     }
-    // }
+    // get fixture for tournament
+    private getFixture = async (req: Request, res: Response) => {
+        try {
+            let result = await this.organizerService.getFixture(req.params.id)
+            res.json(result);
+        }
+        catch (err){
+            console.log(err)
+            res.sendStatus(500);
+        }
+    }
+
+    // get teams who joint the tournament for fixture
+    private getTeamInfo = async (req: Request, res: Response) => {
+        try {
+            let result = await this.organizerService.getTeamInfo(req.params.id)
+            res.json(result);
+        }
+        catch {
+            res.sendStatus(500);
+        }
+    }
+
+    // add fixture to tournament
+    private addTournamentFixture = async (req: Request, res: Response) => {
+        try {
+            await this.organizerService.addFixture(req.params.id, req.body);
+            res.json({success: true});
+        }
+        catch (err) {
+            res.sendStatus(500);
+        }
+    }
+
 }
