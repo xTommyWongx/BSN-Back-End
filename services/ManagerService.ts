@@ -16,9 +16,22 @@ export default class ManagerService {
     kickout = (req: Request, res: Response)=>{
 
     }
-    createTeam = (req: Request, res: Response)=>{
 
+    createTeam = (manager_id:number, club:Models.Team)=>{
+        return this.knex('teams')
+            .returning('team_id')
+            .insert({
+                teamname: club.clubName,
+                numberOfPlayers: club.numberOfPlayers,
+                manager_id: manager_id
+            }).then((id)=>{
+                console.log("first");
+                return this.knex('users')
+                    .update('team_id',id[0])
+                    .where('user_id',manager_id);
+            });
     }
+    
     join_tournament = (req: Request, res: Response)=>{
 
     }
@@ -58,11 +71,11 @@ export default class ManagerService {
     }
     getRequests = (manager_id:number)=>{
         
-        return this.knex('requests')
+        return this.knex('requests').select()
             .innerJoin('users','users.user_id','player_id')
             .where({
                 manager_id: manager_id,
                 request_to_manager: true
-            });
+            })
         }
 }
