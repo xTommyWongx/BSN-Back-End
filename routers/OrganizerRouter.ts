@@ -12,6 +12,7 @@ export default class OrganizerRouter {
         router.post('/tournament', this.create); // post tournament
         router.put('/tournament/:id', this.update); // update tournament
         router.delete('/tournament/:id', this.delete); // delete tournament
+        router.post('/tournament/updateScore', this.updateScore);
 
         return router;
     }
@@ -85,5 +86,12 @@ export default class OrganizerRouter {
             console.log(err)
             res.sendStatus(500);
         }
+    }
+
+    private updateScore = (req: Request, res: Response) => {
+        console.log(req.body);
+        return this.organizerService.updateScore(req.body.fixture, req.body.score)
+            .then(data => res.json(data))
+            .catch(err => res.status(500).json(err));
     }
 }
