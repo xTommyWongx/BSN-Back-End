@@ -15,7 +15,7 @@ export default class OrganizerRouter {
         router.get('/tournament/:id/ranking', this.getRanking);
         router.get('/tournament/:id/fixture', this.getFixture)  //get tournament fixture
         router.get('/tournament/:id/getteaminfo', this.getTeamInfo) // get team who joint the tournament for fixture
-        router.post('/tournament/:id/addfixture', this.addTournamentFixture) // add fixture to tournament
+        router.post('/tournament/:id/createfixture', this.createTournamentFixture) // add fixture to tournament
         router.post('/tournament/updateScore', this.updateScore);
 
         return router;
@@ -103,12 +103,13 @@ export default class OrganizerRouter {
     }
 
     // add fixture to tournament
-    private addTournamentFixture = async (req: Request, res: Response) => {
+    private createTournamentFixture = async (req: Request, res: Response) => {
         try {
-            await this.organizerService.addFixture(req.params.id, req.body);
+            await this.organizerService.addFixture(req.params.id, req.body.fixtureValue);
             res.json({success: true});
         }
         catch (err) {
+            console.log(err)
             res.sendStatus(500);
         }
     }
