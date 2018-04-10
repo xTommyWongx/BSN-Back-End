@@ -11,7 +11,7 @@ export default class OrganizerService {
     }
 
     //get single tournament
-    async get(id: number) {
+    get(id: number) {
         return this.knex
             .select()
             .from('tournaments')
@@ -108,8 +108,7 @@ export default class OrganizerService {
     }
 
     // get tournament for fixture
-    async getFixture(tournamentId: number) {
-
+    getFixture(tournamentId: number) {
         try {
             return this.knex.select('t.tournament_id', 't.tournament_name', 'f.fixture_id', 'home_team.team_id as home_team_id', 'home_team.teamname as home_teamname', 'home_team.logo as home_logo', 'away_team.team_id as away_team_id', 'away_team.teamname as away_teamname', 'away_team.logo as away_logo', 'f.date', 'v.park_name', 'v.district', 'v.street')
                 .from('fixtures as f')
@@ -119,6 +118,40 @@ export default class OrganizerService {
                 .innerJoin('teams as away_team', 'f.away_team', 'away_team.team_id')
                 .where('f.tournament', tournamentId)
                 .orderBy('f.date')
+        }
+        catch (err) {
+            throw err;
+        }
+    }
+
+    // get teams who joint the tournament for fixture
+    async getTeamInfo(id: number) {
+        try {
+            const venues = await this.knex.select().from('venue');
+            const teams = await this.knex
+                .select("teams.team_id", "teams.teamname")
+                .from('tournaments_teams as t_team')
+                .innerJoin('teams', 't_team.team_id', 'teams.team_id')
+                .where('t_team.tournament_id', id)
+
+            return {venues, teams};
+
+        }
+        catch (err) {
+            throw err;
+        }
+    }
+
+    // add fixture to tournament
+    addFixture(id: number, fixtureData: Models.AddTournamentFixture) {
+        try {
+            return this.knex.insert({
+                tournament: id,
+                home_team: fixtureData.home_team,
+                away_team: fixtureData.away_team,
+                venue: fixtureData.venue,
+                date: fixtureData.date
+            }).into('fixtures')
         }
         catch (err) {
             throw err;

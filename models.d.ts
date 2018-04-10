@@ -73,6 +73,13 @@ declare module Models {
         street: string;
     }
 
+    interface AddTournamentFixture {
+        home_team: string;
+        away_team: string;
+        venue: string;
+        date: Date;
+    }
+    
     interface TournamentFixtures {
         tournament_id: number;
         tournament_name: string;
