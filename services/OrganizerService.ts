@@ -128,10 +128,8 @@ export default class OrganizerService {
     updateScore(fixture: Models.TournamentFixtures, score: { home_score: number, away_score: number }) {
         return this.knex.transaction(async trx => {
             try {
-                let homePoints = this.calculatePoints(+score.home_score, +score.away_score);
-                let homeGoalDifference = this.goalDifference(+score.home_score, +score.away_score);
-                let awayPoints = this.calculatePoints(+score.away_score, +score.home_score);
-                let awayGoalDifference = this.goalDifference(+score.away_score, +score.home_score);
+                let { points: homePoints, goalDifference: homeGoalDifference, win: homeWin, draw: homeDraw, lose: homeLose } = this.result(+score.home_score, +score.away_score);
+                let { points: awayPoints, goalDifference: awayGoalDifference, win: awayWin, draw: awayDraw, lose: awayLose } = this.result(+score.away_score, +score.home_score);
 
                 await trx.update(score)
                     .from('fixtures')
@@ -139,30 +137,60 @@ export default class OrganizerService {
                 // .returning('fixture_id')
 
                 await trx.raw(`
-                    INSERT INTO league_table (tournament_id, fixture_id, team_id, points, goals_scored, goals_conceded, goal_difference) 
-                    VALUES (${fixture.tournament_id}, ${fixture.fixture_id}, ${fixture.home_team_id}, ${homePoints}, ${+score.home_score}, ${+score.away_score}, ${homeGoalDifference})
+                    INSERT INTO league_table (tournament_id, fixture_id, team_id, points, goals_scored, goals_conceded, goal_difference, win, draw, lose) 
+                    VALUES (${fixture.tournament_id}, ${fixture.fixture_id}, ${fixture.home_team_id}, ${homePoints}, ${+score.home_score}, ${+score.away_score}, ${homeGoalDifference}, ${homeWin}, ${homeDraw}, ${homeLose} )
                     ON CONFLICT ON CONSTRAINT fixture_id_team_id_unqiue DO UPDATE
-                    SET goals_scored = ${score.home_score}, goals_conceded = ${score.away_score}, goal_difference = ${homeGoalDifference}, points = ${homePoints};`
+                    SET goals_scored = ${score.home_score}, goals_conceded = ${score.away_score}, goal_difference = ${homeGoalDifference}, points = ${homePoints}, win = ${homeWin}, draw = ${homeDraw}, lose = ${homeLose};`
                 )
 
                 await trx.raw(`
-                    INSERT INTO league_table (tournament_id, fixture_id, team_id, points, goals_scored, goals_conceded, goal_difference) 
-                    VALUES (${fixture.tournament_id}, ${fixture.fixture_id}, ${fixture.away_team_id}, ${awayPoints}, ${+score.away_score}, ${+score.home_score}, ${awayGoalDifference})
+                    INSERT INTO league_table (tournament_id, fixture_id, team_id, points, goals_scored, goals_conceded, goal_difference, win, draw, lose) 
+                    VALUES (${fixture.tournament_id}, ${fixture.fixture_id}, ${fixture.away_team_id}, ${awayPoints}, ${+score.away_score}, ${+score.home_score}, ${awayGoalDifference}, ${awayWin}, ${awayDraw}, ${awayLose})
                     ON CONFLICT ON CONSTRAINT fixture_id_team_id_unqiue DO UPDATE
-                    SET goals_scored = ${score.away_score}, goals_conceded = ${score.home_score}, goal_difference = ${awayGoalDifference}, points = ${awayPoints};`
+                    SET goals_scored = ${score.away_score}, goals_conceded = ${score.home_score}, goal_difference = ${awayGoalDifference}, points = ${awayPoints}, win = ${awayWin}, draw = ${awayDraw}, lose = ${awayLose};`
                 )
             }
             catch (err) {
-                throw err
+                console.log(err)
             }
         })
     }
 
-    calculatePoints(ownScore: number, opponentScore: number) {
-        return ((ownScore > opponentScore) ? 3 : ((ownScore < opponentScore) ? 0 : 1));
+    getRanking(tournamentId: number) {
+        return this.knex.raw(`
+        SELECT league_table.team_id, teams.teamname, teams.logo, 
+                SUM(points) AS points, 
+                SUM(goals_scored) AS goals_scored, 
+                SUM(goals_conceded) AS goals_conceded, 
+                SUM(goal_difference) AS goal_difference, 
+                COUNT(league_table.fixture_id) AS games,
+                COUNT(CASE WHEN win = true THEN 1 END) AS win, 
+                COUNT(CASE WHEN draw = true THEN 1 END) AS draw, 
+                COUNT(CASE WHEN lose = true THEN 1 END) AS lose
+        FROM league_table
+        INNER JOIN teams
+        ON league_table.team_id = teams.team_id
+        WHERE tournament_id = ${tournamentId}
+        GROUP BY league_table.team_id, teams.teamname, teams.logo
+        ORDER BY points DESC, goal_difference DESC
+        `).then(res => res.rows);
     }
 
-    goalDifference(ownScore: number, opponentScore: number){
-        return ownScore - opponentScore;
+    result(ownScore: number, opponentScore: number) {
+        let win = false;
+        let draw = false;
+        let lose = false;
+        ((ownScore > opponentScore) ? (win = true) : ((ownScore < opponentScore) ? (lose = true) : (draw = true)));;
+
+        let points = ((ownScore > opponentScore) ? 3 : ((ownScore < opponentScore) ? 0 : 1));;
+        let goalDifference = ownScore - opponentScore;
+
+        return {
+            points: points,
+            goalDifference: goalDifference,
+            win: win,
+            draw: draw,
+            lose: lose
+        };
     }
 }

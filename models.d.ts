@@ -88,4 +88,15 @@ declare module Models {
         district: string;
         street: string;
     }
+
+    interface Ranking{
+        team_id: number;
+        teamname: string;
+        logo: string;
+        points: number;
+        goals_scored: number;
+        goals_conceded: number;
+        goal_difference: number;
+        games: number;
+    }
 }
