@@ -11,15 +11,12 @@ export default class OrganizerRouter {
         router.post('/tournament', this.create); // post tournament
         router.put('/tournament/:id', this.update); // update tournament
         router.delete('/tournament/:id', this.delete); // delete tournament
-<<<<<<< HEAD
         router.post('/tournament/score', this.updateScore);
         router.get('/tournament/:id/ranking', this.getRanking);
-=======
         router.get('/tournament/:id/fixture', this.getFixture)  //get tournament fixture
         router.get('/tournament/:id/getteaminfo', this.getTeamInfo) // get team who joint the tournament for fixture
         router.post('/tournament/:id/addfixture', this.addTournamentFixture) // add fixture to tournament
         router.post('/tournament/updateScore', this.updateScore);
->>>>>>> 80fc84b41567cfef772a1ccec36882aa0639dfcf
 
         return router;
     }
