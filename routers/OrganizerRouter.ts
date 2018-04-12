@@ -6,7 +6,8 @@ export default class OrganizerRouter {
     
     router():Router {
         let router:Router = Router();
-        router.get('/tournament', this.index); // get all tournaments
+        router.get('/tournament', this.index); // get all tournaments post for organizer and player
+        router.get('/tournament/team/:id', this.indexForManager); // get all tournaments post for manager
         router.get('/tournament/:id', this.get); // get single tournament
         router.post('/tournament', this.create); // post tournament
         router.put('/tournament/:id', this.update); // update tournament
@@ -17,15 +18,27 @@ export default class OrganizerRouter {
         router.get('/tournament/:id/getteaminfo', this.getTeamInfo) // get team who joint the tournament for fixture
         router.post('/tournament/:id/createfixture', this.createTournamentFixture) // add fixture to tournament
         router.post('/tournament/updateScore', this.updateScore);
+        router.get('/getRequests', this.getRequests); // check if there are join tournament requests from teams
 
         return router;
     }
 
-    // get all tournament post
+    // get all tournaments post for organizer and player
     private index = async (req: Request, res: Response) => {
         try {
             let result = await this.organizerService.index();
             res.json(result);
+        }
+        catch (err) {
+            res.sendStatus(500);
+        }
+    }
+
+    // get all tournaments post for manager
+    private indexForManager = async (req: Request, res: Response) => {
+        try {
+            let result = await this.organizerService.indexForManager(req.params.id);
+            res.json(result.rows);
         }
         catch (err) {
             res.sendStatus(500);
@@ -125,5 +138,18 @@ export default class OrganizerRouter {
         return this.organizerService.getRanking(req.params.id)
             .then(data => res.json(data))
             .catch(err => res.status(500).json(err));
+    }
+
+    // check if there are join tournament requests from teams
+    private getRequests = async (req: Request, res: Response) => {
+        try {
+            if (req.user) {
+                let result = await this.organizerService.getRequests(req.user.id);
+                res.json(result.rows);
+            }
+        }
+        catch (err) {
+            res.json(err);
+        }
     }
 }

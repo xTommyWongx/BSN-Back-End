@@ -11,7 +11,7 @@ export default class ManagerRouter {
         router.get('/playerDetails/:id', this.playerInfo);   //send individual player info
         router.delete('/kickPlayer/:id', this.kickout);  //kickout player from the team
         router.post('/createTeam', this.createTeam); //create team
-        router.post('/joinTournament', this.join_tournament);    //request to join tournament
+        router.post('/joinTournament', this.joinTournament);    //request to join tournament
         router.delete('/cancelTournament/:teamId/:tournamentId', this.cancel_tournament); //cancel request to join tournament
         router.post('/uploadFlag', this.uploadFlag); //upload team flag
         router.put('/updateTeam', this.updateTeam); //update team info
@@ -69,9 +69,15 @@ export default class ManagerRouter {
         }
         // return this.managerService.createTeam
     }
-    join_tournament = (req: Request, res: Response) => {
 
+    joinTournament = (req: Request, res: Response) => {
+        this.managerService.join_tournament(req.body.data.tournamentId, req.body.data.teamId)
+            .then(() => {
+                res.send();
+            })
+            .catch(err => res.sendStatus(500))
     }
+
     cancel_tournament = (req: Request, res: Response) => {
 
     }
