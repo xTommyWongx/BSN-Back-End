@@ -134,7 +134,7 @@ export default class OrganizerService {
                 .innerJoin('teams', 't_team.team_id', 'teams.team_id')
                 .where('t_team.tournament_id', id)
 
-            return {venues, teams};
+            return { venues, teams };
 
         }
         catch (err) {
@@ -171,17 +171,39 @@ export default class OrganizerService {
 
                 await trx.raw(`
                     INSERT INTO league_table (tournament_id, fixture_id, team_id, points, goals_scored, goals_conceded, goal_difference, win, draw, lose) 
-                    VALUES (${fixture.tournament_id}, ${fixture.fixture_id}, ${fixture.home_team_id}, ${homePoints}, ${+score.home_score}, ${+score.away_score}, ${homeGoalDifference}, ${homeWin}, ${homeDraw}, ${homeLose} )
+                    VALUES (:tournament_id, :fixture_id, :home_team_id, :homePoints, :home_score, :away_score, :homeGoalDifference, :homeWin, :homeDraw, :homeLose )
                     ON CONFLICT ON CONSTRAINT fixture_id_team_id_unqiue DO UPDATE
-                    SET goals_scored = ${score.home_score}, goals_conceded = ${score.away_score}, goal_difference = ${homeGoalDifference}, points = ${homePoints}, win = ${homeWin}, draw = ${homeDraw}, lose = ${homeLose};`
-                )
+                    SET goals_scored = :home_score, goals_conceded = :away_score, goal_difference = :homeGoalDifference, points = :homePoints, win = :homeWin, draw = :homeDraw, lose = :homeLose;`
+                    , {
+                        tournament_id: fixture.tournament_id,
+                        fixture_id: fixture.fixture_id,
+                        home_team_id: fixture.home_team_id,
+                        homePoints: homePoints,
+                        home_score: +score.home_score,
+                        away_score: +score.away_score,
+                        homeGoalDifference: homeGoalDifference,
+                        homeWin: homeWin,
+                        homeDraw: homeDraw,
+                        homeLose: homeLose
+                    })
 
                 await trx.raw(`
                     INSERT INTO league_table (tournament_id, fixture_id, team_id, points, goals_scored, goals_conceded, goal_difference, win, draw, lose) 
-                    VALUES (${fixture.tournament_id}, ${fixture.fixture_id}, ${fixture.away_team_id}, ${awayPoints}, ${+score.away_score}, ${+score.home_score}, ${awayGoalDifference}, ${awayWin}, ${awayDraw}, ${awayLose})
+                    VALUES (:tournament_id, :fixture_id, :away_team_id, :awayPoints, :away_score, :home_score, :awayGoalDifference, :awayWin, :awayDraw, :awayLose)
                     ON CONFLICT ON CONSTRAINT fixture_id_team_id_unqiue DO UPDATE
-                    SET goals_scored = ${score.away_score}, goals_conceded = ${score.home_score}, goal_difference = ${awayGoalDifference}, points = ${awayPoints}, win = ${awayWin}, draw = ${awayDraw}, lose = ${awayLose};`
-                )
+                    SET goals_scored = :away_score, goals_conceded = :home_score, goal_difference = :awayGoalDifference, points = :awayPoints, win = :awayWin, draw = :awayDraw, lose = :awayLose;`
+                    , {
+                        tournament_id: fixture.tournament_id,
+                        fixture_id: fixture.fixture_id,
+                        away_team_id: fixture.away_team_id,
+                        awayPoints: awayPoints,
+                        home_score: +score.home_score,
+                        away_score: +score.away_score,
+                        awayGoalDifference: awayGoalDifference,
+                        awayWin: awayWin,
+                        awayDraw: awayDraw,
+                        awayLose: awayLose
+                    })
             }
             catch (err) {
                 console.log(err)
@@ -203,10 +225,10 @@ export default class OrganizerService {
         FROM league_table
         INNER JOIN teams
         ON league_table.team_id = teams.team_id
-        WHERE tournament_id = ${tournamentId}
+        WHERE tournament_id = ?
         GROUP BY league_table.team_id, teams.teamname, teams.logo
         ORDER BY points DESC, goal_difference DESC
-        `).then(res => res.rows);
+        `, { tournamentId: tournamentId }).then(res => res.rows);
     }
 
     result(ownScore: number, opponentScore: number) {

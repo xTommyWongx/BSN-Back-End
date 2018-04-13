@@ -106,4 +106,10 @@ declare module Models {
         goal_difference: number;
         games: number;
     }
+
+    // @Bal, adding team interface
+    interface Team{
+        clubName: string;
+        numberOfPlayers: number;
+    }
 }
