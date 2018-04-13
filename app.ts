@@ -39,7 +39,7 @@ const {app, auth} = initapp(knex);
 app.use('/api/users', auth.authenticate(), new UserRouter(userService).router()); // users commom functions
 app.use('/api/players',auth.authenticate(), new PlayerRouter(playerService).router());  // specific to player fuctions
 app.use('/api/managers',auth.authenticate(), new ManagerRouter(managerService).router()); // specific to manager functions
-app.use('/api/organizers', auth.authenticate(), new OrganizerRouter(organizerService).router()); // specific to organizer functions
+app.use('/api/organizers',auth.authenticate(), new OrganizerRouter(organizerService).router()); // specific to organizer functions
 app.use('/api/teams',auth.authenticate(), new TeamRouter(teamService).router()); // specific to team functions
 app.use('/api/auth', new AuthRouter(authService).router()); //login and registration of users
 
