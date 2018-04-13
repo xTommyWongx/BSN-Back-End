@@ -4,7 +4,7 @@ dotenv.config();
 
 import * as Knex from 'knex';
 
-const NODE_ENV = process.env.NODE_ENV || 'development';
+const NODE_ENV = process.env.NODE_ENV || 'production';
 const knexFile = require('./knexfile')[NODE_ENV];
 const knex = Knex(knexFile);
 const port = process.env.PORT || 8080;
