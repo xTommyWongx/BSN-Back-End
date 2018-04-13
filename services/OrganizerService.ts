@@ -263,6 +263,7 @@ export default class OrganizerService {
                 ON t.organizer_id = users.user_id
                 INNER JOIN teams
                 ON t_requests.team_id = teams.team_id
+                WHERE t.organizer_id = ${userId}
             `)
         }
         catch (err) {
