@@ -249,10 +249,10 @@ export default class OrganizerService {
         FROM league_table
         INNER JOIN teams
         ON league_table.team_id = teams.team_id
-        WHERE tournament_id = ?
+        WHERE tournament_id = :tournamentId
         GROUP BY league_table.team_id, teams.teamname, teams.logo
         ORDER BY points DESC, goal_difference DESC
-        `, { tournamentId: tournamentId }).then(res => res.rows);
+        `, { tournamentId: tournamentId }).then(res => res.rows)
     }
 
     result(ownScore: number, opponentScore: number) {
