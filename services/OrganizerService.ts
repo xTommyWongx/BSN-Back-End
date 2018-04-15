@@ -148,6 +148,56 @@ export default class OrganizerService {
         }
     }
 
+    // get edit tournament info
+    async getEditFixture(fixtureId: number) {
+        try {
+            const venues = await this.knex.select().from('venue');
+            const teams = await this.knex
+                .select()
+                .from('fixtures as f')
+                .where('f.fixture_id', fixtureId)
+                .innerJoin('tournaments_teams', 'f.tournament', 'tournaments_teams.tournament_id')
+                .innerJoin('teams', 'teams.team_id', 'tournaments_teams.team_id')
+
+            const result = await this.knex.raw(`
+                SELECT
+                    f.fixture_id, f.tournament, f.home_team, f.away_team, f.date, 
+                    home_team.teamname AS home_team, away_team.teamname AS away_team, 
+                    venue.street, venue.district, venue.park_name
+
+                FROM fixtures AS f
+                INNER JOIN teams as home_team
+                ON f.home_team = home_team.team_id
+                INNER JOIN teams as away_team
+                ON f.away_team = away_team.team_id
+                INNER JOIN venue
+                ON f.venue = venue.venue_id
+                WHERE f.fixture_id = 11
+            `)
+
+            const fixtures = result.rows;
+
+            return { venues, teams, fixtures };
+        }
+        catch (err) {
+            throw err;
+        }
+    }
+
+    // update tournament fixture
+    updateFixture(fixtureId: number, fixtureValue: Models.AddTournamentFixture) {
+        return this.knex
+            .select()
+            .from('fixtures')
+            .where('fixtures.fixture_id', fixtureId)
+            .update({
+                home_team: fixtureValue.home_team,
+                away_team: fixtureValue.away_team,
+                venue: fixtureValue.venue,
+                date: fixtureValue.date
+            })
+    }
+
     // get teams who joint the tournament for fixture
     async getTeamInfo(id: number) {
         try {
@@ -292,4 +342,35 @@ export default class OrganizerService {
             throw err;
         }
     }
+
+    async acceptJoinTournament(tournamentTeamId: number, teamId: number, requestId: number) {
+        return this.knex.transaction(async (trx) => {
+            try {
+                await trx
+                    .select()
+                    .insert({
+                        tournament_id: tournamentTeamId,
+                        team_id: teamId
+                    })
+                    .into('tournaments_teams')
+
+                await trx
+                    .select()
+                    .from('tournament_requests')
+                    .where('tournament_requests.tournament_request_id', requestId)
+                    .del();
+            }
+            catch (err) {
+                throw err;
+            }
+        })
+    }
+  
+    rejectJoinTournament(requestId: number) {
+        return this.knex
+            .select()
+            .from('tournament_requests')
+            .where('tournament_requests.tournament_request_id', requestId)
+            .del();
+    }  
 }
