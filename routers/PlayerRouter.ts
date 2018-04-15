@@ -11,6 +11,7 @@ export default class PlayerRouter {
         router.post('/joinTeam',this.joinTeam); //request to join team
         router.get('/getRequests',this.getRequests);//get the requests from managers to join them
         router.post('/acceptClub',this.acceptClub); // accept the invitation to join the club
+        router.post('/rejectClub',this.rejectClub); // reject invitation
 
         return router;
     }
@@ -64,6 +65,20 @@ export default class PlayerRouter {
                     res.json(err);
                 })
         }else{
+            return;
+        }
+    }
+
+    rejectClub = (req: Request, res: Response) => {
+        if(req.user){
+            return this.playerService.rejectClub(req.user.id, req.body.manager_id)
+                        .then(()=>{
+                            res.send();
+                        }).catch(err=>{
+                            console.log(err);
+                            res.send(err);
+                        })
+        } else {
             return;
         }
     }

@@ -2,7 +2,8 @@ import { Router, Request, Response } from 'express';
 import UserService from '../services/UserService';
 
 export default class UserRouter {
-    constructor(private userService: UserService) {
+    constructor(private userService: UserService, 
+                ) {
 
     }
     router(): Router {
@@ -67,6 +68,7 @@ export default class UserRouter {
                         })
                 }
             }
+            
         }else {
             return;
         }

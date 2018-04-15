@@ -13,6 +13,8 @@ export default  (knex: Knex) => {
     app.use(bodyParser.urlencoded({ extended: false }));
     app.use(bodyParser.json());
     app.use(cors());
+    app.use(auth.initialize());
+    app.use(auth.session());
 
     return {
         app: app,
