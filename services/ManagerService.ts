@@ -32,9 +32,13 @@ export default class ManagerService {
             });
     }
     
-    join_tournament = (req: Request, res: Response)=>{
-
+    join_tournament = (tournamentId: number, teamId: number)=>{
+        return this.knex.insert({
+            tournament_id: tournamentId,
+            team_id: teamId
+        }).into('tournament_requests')
     }
+    
     cancel_tournament = (req: Request, res: Response)=>{
 
     }

@@ -42,10 +42,10 @@ const io = require('socket.io')(http);
 
 
 app.use('/api/users', auth.authenticate(), new UserRouter(userService).router()); // users commom functions
-app.use('/api/players', auth.authenticate(), new PlayerRouter(playerService).router());  // specific to player fuctions
-app.use('/api/managers', auth.authenticate(), new ManagerRouter(managerService).router()); // specific to manager functions
-app.use('/api/organizers', auth.authenticate(), new OrganizerRouter(organizerService).router()); // specific to organizer functions
-app.use('/api/teams', auth.authenticate(), new TeamRouter(teamService).router()); // specific to team functions
+app.use('/api/players',auth.authenticate(), new PlayerRouter(playerService).router());  // specific to player fuctions
+app.use('/api/managers',auth.authenticate(), new ManagerRouter(managerService).router()); // specific to manager functions
+app.use('/api/organizers',auth.authenticate(), new OrganizerRouter(organizerService).router()); // specific to organizer functions
+app.use('/api/teams',auth.authenticate(), new TeamRouter(teamService).router()); // specific to team functions
 app.use('/api/auth', new AuthRouter(authService).router()); //login and registration of users
 
 io.on('connection', (socket: socket.Socket) => {
@@ -139,7 +139,6 @@ io.on('connection', (socket: socket.Socket) => {
         redisClient.lpush(e.room, JSON.stringify(wholeMessage), (err) => {
             if (err) {
                 console.log(err);
-                socket.emit('chat error', 'SORRY! Something\'s wrong :(');
                 return;
             }
             socket.emit('message', wholeMessage);

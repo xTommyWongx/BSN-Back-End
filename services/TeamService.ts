@@ -24,16 +24,16 @@ export default class TeamService {
         return this.knex.raw(
             `SELECT t.tournament_name,
             (CASE 
-            WHEN home_team.team_id = ${teamId} THEN away_team.teamname 
-            WHEN away_team.team_id = ${teamId} THEN home_team.teamname 
+            WHEN home_team.team_id = :teamId THEN away_team.teamname 
+            WHEN away_team.team_id = :teamId THEN home_team.teamname 
             END) AS opponent_teamname,
             (CASE 
-            WHEN home_team.team_id = ${teamId} THEN away_team.logo 
-            WHEN away_team.team_id = ${teamId} THEN home_team.logo 
+            WHEN home_team.team_id = :teamId THEN away_team.logo 
+            WHEN away_team.team_id = :teamId THEN home_team.logo 
             END) as opponent_logo,
             (CASE 
-            WHEN home_team.team_id = ${teamId} THEN 'Away Team' 
-            WHEN away_team.team_id = ${teamId} THEN 'Home Team' 
+            WHEN home_team.team_id = :teamId THEN 'AWAY TEAM' 
+            WHEN away_team.team_id = :teamId THEN 'HOME TEAM' 
             END) as opponent_position,
             f.date, v.park_name, v.district, v.street
             FROM fixtures AS f
@@ -41,8 +41,8 @@ export default class TeamService {
             INNER JOIN venue as v ON f.venue = v.venue_id
             INNER JOIN teams as home_team ON f.home_team = home_team.team_id
             INNER JOIN teams as away_team ON f.away_team = away_team.team_id
-            WHERE home_team = ${teamId} OR away_team = ${teamId}
-            ORDER BY f.date ASC;`
+            WHERE home_team = :teamId OR away_team = :teamId
+            ORDER BY f.date ASC;`, {teamId: teamId}
         ).then(res => res.rows);
     }
 
