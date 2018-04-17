@@ -15,6 +15,7 @@ export default class OrganizerRouter {
         router.post('/tournament/score', this.updateScore);
         router.get('/tournament/:id/ranking', this.getRanking);
         router.get('/tournament/:id/fixture', this.getFixture)  //get tournament fixture
+        router.get('/tournament/:id/upcomingFixture', this.getUpcomingFixture)  //get upcoming tournament fixture
         router.get('/tournament/:tournamentId/fixture/:fixtureId', this.getEditFixture) // get edit tournament fixture info
         router.put('/tournament/:tournamentId/fixture/:fixtureId', this.updateFixture) // update tournament fixture info
         router.get('/tournament/:id/getteaminfo', this.getTeamInfo) // get team who joint the tournament for fixture
@@ -100,6 +101,17 @@ export default class OrganizerRouter {
     private getFixture = async (req: Request, res: Response) => {
         try {
             let result = await this.organizerService.getFixture(req.params.id)
+            res.json(result);
+        }
+        catch (err){
+            console.log(err)
+            res.sendStatus(500);
+        }
+    }
+
+    private getUpcomingFixture = async (req: Request, res: Response) => {
+        try {
+            let result = await this.organizerService.getUpcomingFixture(req.params.id)
             res.json(result);
         }
         catch (err){
