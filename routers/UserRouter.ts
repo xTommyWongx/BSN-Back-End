@@ -1,5 +1,14 @@
 import { Router, Request, Response } from 'express';
 import UserService from '../services/UserService';
+import * as AWS from 'aws-sdk';
+import { v1 } from 'uuid';
+
+const s3 = new AWS.S3({
+    accessKeyId: process.env.accessKeyId,
+    secretAccessKey: process.env.secretAccessKey,
+    signatureVersion: 'v4',
+    region: 'ap-northeast-2'
+});
 
 export default class UserRouter {
     constructor(private userService: UserService, 
@@ -9,6 +18,8 @@ export default class UserRouter {
     router(): Router {
         let router = Router();
         router.get('/profile', this.getProfile); //send profile info
+        router.get('/getPresignedUrl', this.getPresignedUrl);//get the presigned url from aws
+        router.put('/uploadPic', this.updateProfilePic);// update profile pic
         router.get('/dashboard', this.dashboard); //send dashboard info
         router.get('/teams', this.teamsList); //send all teams list
         router.get('/team/:id', this.teamDetails); //send team detail 
@@ -73,6 +84,33 @@ export default class UserRouter {
             return;
         }
     }
+
+    getPresignedUrl = (req: Request, res: Response) => {
+        if(req.user){
+        const key = `${req.user.id}/${v1()}.jpeg`;
+        s3.getSignedUrl('putObject', {
+            Bucket: 'building-sports-network',
+            ContentType: 'image/jpeg',
+            Key: key
+        },
+        (err, url)=> res.send({key, url}))
+      }
+    }
+
+    updateProfilePic = (req: Request, res: Response) => {
+        if(req.user){
+            return this.userService.uploadProfilePic(req.body.img, req.user.id)
+                    .then(()=>{
+                        console.log("upload successful");
+                        res.json({
+                            success: true,
+                            msg: "Image uploaded"
+                        });
+                    }).catch(err=> console.log(err));
+        } else 
+            return;
+    }
+
     teamsList = (req: Request, res: Response) => {
 
     }
