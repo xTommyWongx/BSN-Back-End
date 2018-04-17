@@ -164,7 +164,10 @@ export default class OrganizerRouter {
         console.log(req.params.id);
         return this.organizerService.getRanking(req.params.id)
             .then(data => res.json(data))
-            .catch(err => res.status(500).json(err));
+            .catch(err => {
+                console.log(err);
+                res.status(500).json(err)
+            });
     }
 
     // check if there are join tournament requests from teams
