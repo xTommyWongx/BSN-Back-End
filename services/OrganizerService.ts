@@ -5,9 +5,10 @@ export default class OrganizerService {
     // get all tournaments post for organizer and player
     index() {
         return this.knex
-            .select()
+            .select('tournaments.*', 'tournaments_dates_location.*', 'users.firstname', 'users.lastname')
             .from('tournaments')
             .innerJoin('tournaments_dates_location', 'tournaments_dates_location.tournament_id', 'tournaments.tournament_id')
+            .innerJoin('users', 'organizer_id', 'user_id')
             .orderBy('tournaments_dates_location.date')
     }
 
@@ -18,8 +19,12 @@ export default class OrganizerService {
                 t.tournament_id AS id, t.category, t.number_of_teams, t.game_size, t.organizer_id, t.winner_prize, t.runnerup_prize, t.entry_fee, t.tournament_name,
                 t_dates_location.date, t_dates_location.location,
                 t_teams.team_id AS t_team_id,
-                t_requests.team_id AS request_team_id
+                t_requests.team_id AS request_team_id,
+                users.firstname, users.lastname
             FROM tournaments AS t
+
+            INNER JOIN users
+            ON t.organizer_id = users.user_id
             
             INNER JOIN tournaments_dates_location AS t_dates_location
             ON t.tournament_id = t_dates_location.tournament_id
@@ -159,6 +164,22 @@ export default class OrganizerService {
     getFixture(tournamentId: number) {
         try {
             return this.knex.select('t.tournament_id', 't.tournament_name', 'f.fixture_id', 'home_team.team_id as home_team_id', 'home_team.teamname as home_teamname', 'home_team.logo as home_logo', 'away_team.team_id as away_team_id', 'away_team.teamname as away_teamname', 'away_team.logo as away_logo', 'f.date', 'v.park_name', 'v.district', 'v.street')
+                .from('fixtures as f')
+                .innerJoin('tournaments as t', 'f.tournament', 't.tournament_id')
+                .innerJoin('venue as v', 'f.venue', 'v.venue_id')
+                .innerJoin('teams as home_team', 'f.home_team', 'home_team.team_id')
+                .innerJoin('teams as away_team', 'f.away_team', 'away_team.team_id')
+                .where('f.tournament', tournamentId)
+                .orderBy('f.date')
+        }
+        catch (err) {
+            throw err;
+        }
+    }
+
+    getUpcomingFixture(tournamentId: number) {
+        try {
+            return this.knex.first('t.tournament_id', 't.tournament_name', 'f.fixture_id', 'home_team.team_id as home_team_id', 'home_team.teamname as home_teamname', 'home_team.logo as home_logo', 'away_team.team_id as away_team_id', 'away_team.teamname as away_teamname', 'away_team.logo as away_logo', 'f.date', 'v.park_name', 'v.district', 'v.street')
                 .from('fixtures as f')
                 .innerJoin('tournaments as t', 'f.tournament', 't.tournament_id')
                 .innerJoin('venue as v', 'f.venue', 'v.venue_id')
@@ -326,7 +347,7 @@ export default class OrganizerService {
         WHERE tournament_id = :tournamentId
         GROUP BY league_table.team_id, teams.teamname, teams.logo
         ORDER BY points DESC, goal_difference DESC
-        `, { tournamentId: tournamentId }).then(res => res.rows);
+        `, { tournamentId: tournamentId }).then(res => res.rows)
     }
 
     result(ownScore: number, opponentScore: number) {
@@ -389,12 +410,12 @@ export default class OrganizerService {
             }
         })
     }
-  
+
     rejectJoinTournament(requestId: number) {
         return this.knex
             .select()
             .from('tournament_requests')
             .where('tournament_requests.tournament_request_id', requestId)
             .del();
-    }  
+    }
 }

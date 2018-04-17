@@ -1,5 +1,5 @@
-import * as dotenv from 'dotenv';
-dotenv.config();
+// import * as dotenv from 'dotenv';
+// dotenv.config();
 
 import * as socket from 'socket.io';
 import * as Knex from 'knex';
@@ -99,6 +99,7 @@ io.on('connection', (socket: socket.Socket) => {
                         if (Array.isArray(messages)) {
                             messages = messages.map(res => JSON.parse(res));
                         }
+                        console.log('initial messages',messages);
                         socket.emit('initial messages',messages);
                         socket.emit('online', online);
                         socket.broadcast.to(data.roomNum).emit('online',online);
