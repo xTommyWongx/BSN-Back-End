@@ -29,6 +29,10 @@ export default  (app:express.Application, knex: Knex)=>{
         },
         authenticate: function() {
             return passport.authenticate("jwt", config.jwtSession);
+        },
+        session: function(){
+            return passport.session();
         }
+        
     };
 }

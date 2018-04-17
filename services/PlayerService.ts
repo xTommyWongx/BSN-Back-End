@@ -26,6 +26,16 @@ export default class PlayerService {
         return this.knex('users').update('team_id',team_id)
                         .where('user_id',player_id);
     }
+
+    rejectClub = (player_id:number, manager_id: number) => {
+        console.log("reject request");
+        return this.knex('requests').where({
+            player_id,
+            manager_id,
+            request_to_player: true
+        }).del();
+    }
+
     // clear request from requests table
     clearRequest = (player_id:number, manager_id:number) => {
         return this.knex('requests').where({player_id,manager_id}).del();

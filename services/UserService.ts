@@ -53,4 +53,8 @@ export default class UserService {
     tournamentDetail(req: Request, res: Response){
 
     }
+    uploadProfilePic(img:string,id: number){
+        return this.knex('users').update('image',img)
+                    .where('user_id', id);
+    }
 }
