@@ -28,17 +28,20 @@ export default class AuthRouter {
                     const facebookId = parseInt(data.data.id);
                     const facebookUserName = data.data.name;
 
-                    await this.authService.login(facebookId, facebookUserName)
+                    let user = await this.authService.login(facebookId, facebookUserName);
+
                     let payload = {
                         facebook_id: facebookId
                     }
 
                     let token = jwt.encode(payload, config.jwtSecret);
                     res.json({
-                        token: token
+                        token: token,
+                        user_id: user
                     });
                 }
             } catch (err) {
+                console.log(err)
                 res.sendStatus(401);
             }
         } else {

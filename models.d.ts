@@ -112,4 +112,11 @@ declare module Models {
         clubName: string;
         numberOfPlayers: number;
     }
+
+    interface userInfoForFacebookLogin {
+        firstname: string;
+        lastname: string;
+        location: string;
+        status: string;
+    }
 }

@@ -17,6 +17,7 @@ export default class UserRouter {
 
         router.get('/', this.getProfile);
         router.patch('/', this.editProfile);
+        router.put('/:id', this.editUserInfo); // update user information using facebook login
         
         return router;
     }
@@ -114,5 +115,11 @@ export default class UserRouter {
         } else {
             return -1;
         }
+    }
+
+    editUserInfo = (req: Request, res: Response) => {
+        return this.userService.editUserInfo(req.params.id, req.body.userInfo)
+            .then(userStatus => res.json(userStatus[0]))
+            .catch(err => res.status(500))
     }
 }
