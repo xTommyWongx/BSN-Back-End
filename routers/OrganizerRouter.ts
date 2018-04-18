@@ -93,6 +93,7 @@ export default class OrganizerRouter {
             res.json({success: true});
         }
         catch (err) {
+            console.log(err);
             res.sendStatus(500);
         }
     }

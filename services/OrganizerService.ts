@@ -41,27 +41,30 @@ export default class OrganizerService {
         `)
     }
 
-        // SELECT 
-        // t.tournament_id AS id, t.category, t.number_of_teams, t.game_size, t.organizer_id, t.winner_prize, t.runnerup_prize, t.entry_fee, t.tournament_name,
-        // t_dates_location.date, t_dates_location.location,
-        // array_agg(t_teams.team_id) AS t_team_id,
-        // array_agg(t_requests.team_id) AS request_team_id
-        // FROM tournaments AS t
+        // return this.knex.raw(`
+        //     SELECT 
+        //     t.tournament_id AS id, t.category, t.number_of_teams, t.game_size, t.organizer_id, t.winner_prize, t.runnerup_prize, t.entry_fee, t.tournament_name,
+        //     t_dates_location.date, t_dates_location.location,
+        //     array_agg(t_teams.team_id) AS t_team_id,
+        //     array_agg(t_requests.team_id) AS request_team_id
+        //     FROM tournaments AS t
+        
+        //     INNER JOIN tournaments_dates_location AS t_dates_location
+        //     ON t.tournament_id = t_dates_location.tournament_id
+        
+        //     LEFT OUTER JOIN tournaments_teams AS t_teams
+        //     ON t.tournament_id = t_teams.tournament_id
+        
+        //     LEFT OUTER JOIN tournament_requests AS t_requests
+        //     ON t.tournament_id = t_requests.tournament_id
+        
+        //     GROUP BY t.tournament_id, t.category, t.number_of_teams, t.game_size, t.organizer_id, t.winner_prize, t.runnerup_prize, t.entry_fee, t.tournament_name,
+        //     t_dates_location.date, t_dates_location.location
+        
+        
+        //     ORDER BY t_dates_location.date
+        // `)
 
-        // INNER JOIN tournaments_dates_location AS t_dates_location
-        // ON t.tournament_id = t_dates_location.tournament_id
-
-        // LEFT OUTER JOIN tournaments_teams AS t_teams
-        // ON t.tournament_id = t_teams.tournament_id
-
-        // LEFT OUTER JOIN tournament_requests AS t_requests
-        // ON t.tournament_id = t_requests.tournament_id
-
-        // GROUP BY t.tournament_id, t.category, t.number_of_teams, t.game_size, t.organizer_id, t.winner_prize, t.runnerup_prize, t.entry_fee, t.tournament_name,
-        // t_dates_location.date, t_dates_location.location
-
-
-        // ORDER BY t_dates_location.date
         
 
     //get single tournament/api/organizers
