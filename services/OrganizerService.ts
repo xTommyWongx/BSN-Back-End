@@ -9,6 +9,7 @@ export default class OrganizerService {
             .from('tournaments')
             .innerJoin('tournaments_dates_location', 'tournaments_dates_location.tournament_id', 'tournaments.tournament_id')
             .innerJoin('users', 'organizer_id', 'user_id')
+            .where('tournaments.deleted','false')
             .orderBy('tournaments_dates_location.date')
     }
 
@@ -22,6 +23,7 @@ export default class OrganizerService {
                 t_requests.team_id AS request_team_id,
                 users.firstname, users.lastname
             FROM tournaments AS t
+            
 
             INNER JOIN users
             ON t.organizer_id = users.user_id
@@ -36,6 +38,7 @@ export default class OrganizerService {
             ON t.tournament_id = t_requests.tournament_id
             
             WHERE t_teams.team_id = ${teamId} OR t_teams.team_id IS NULL
+            AND t.deleted = FALSE
             ORDER BY t_dates_location.date
         `)
     }
@@ -117,18 +120,13 @@ export default class OrganizerService {
     //delete tournament
     delete(id: number) {
         return this.knex.transaction(async (trx) => {
+            console.log('del')
             try {
                 await trx
                     .select()
-                    .from('tournaments_dates_location')
-                    .where('tournaments_dates_location.tournament_id', id)
-                    .del()
-
-                await trx
-                    .select()
                     .from('tournaments')
+                    .update({deleted: true})
                     .where('tournaments.tournament_id', id)
-                    .del()
             }
             catch (err) {
                 throw err;
@@ -139,7 +137,7 @@ export default class OrganizerService {
     // get tournament for fixture
     getFixture(tournamentId: number) {
         try {
-            return this.knex.select('t.tournament_id', 't.tournament_name', 'f.fixture_id', 'home_team.team_id as home_team_id', 'home_team.teamname as home_teamname', 'home_team.logo as home_logo', 'away_team.team_id as away_team_id', 'away_team.teamname as away_teamname', 'away_team.logo as away_logo', 'f.date', 'v.park_name', 'v.district', 'v.street')
+            return this.knex.select('t.tournament_id', 't.tournament_name', 'f.fixture_id', 'home_team.team_id as home_team_id', 'home_team.teamname as home_teamname', 'home_team.logo as home_logo', 'away_team.team_id as away_team_id', 'away_team.teamname as away_teamname', 'away_team.logo as away_logo', 'f.date', 'v.park_name', 'v.district', 'v.street','f.home_score', 'f.away_score')
                 .from('fixtures as f')
                 .innerJoin('tournaments as t', 'f.tournament', 't.tournament_id')
                 .innerJoin('venue as v', 'f.venue', 'v.venue_id')
