@@ -6,7 +6,7 @@ exports.seed = function(knex, Promise) {
       // Inserts seed entries
       return knex('users').insert([
         {
-          user_id: 1, firstname: 'Bal',
+          firstname: 'Bal',
           lastname: 'Kumar Rai', 
           password: '$2a$10$OJzbxagDDHmS1FNS1z9KyOQwNDEYLmDCK695I/7xxr8w8aZKDYueS',
           email: 'bal@example.com',
@@ -14,7 +14,7 @@ exports.seed = function(knex, Promise) {
           status: 'manager'
         },
         {
-          user_id: 2, firstname: 'Thomas',
+          firstname: 'Thomas',
           lastname: 'Lee', 
           password: '$2a$10$OJzbxagDDHmS1FNS1z9KyOQwNDEYLmDCK695I/7xxr8w8aZKDYueS',          
           email: 'thomas@example.com',
@@ -22,7 +22,7 @@ exports.seed = function(knex, Promise) {
           status: 'manager'
         },
         {
-          user_id: 3, firstname: 'Tommy',
+          firstname: 'Tommy',
           lastname: 'Wong',
           password: '$2a$10$OJzbxagDDHmS1FNS1z9KyOQwNDEYLmDCK695I/7xxr8w8aZKDYueS',          
           email: 'tommy@example.com',
@@ -30,7 +30,7 @@ exports.seed = function(knex, Promise) {
           status: 'manager'
         },
         {
-          user_id: 4, firstname: 'Gordan',
+          firstname: 'Gordan',
           lastname: 'Chung', 
           password: '$2a$10$OJzbxagDDHmS1FNS1z9KyOQwNDEYLmDCK695I/7xxr8w8aZKDYueS',          
           email: 'gordan@example.com',
@@ -38,7 +38,7 @@ exports.seed = function(knex, Promise) {
           status: 'manager'
         },
         {
-          user_id: 5, firstname: 'Billy',
+          firstname: 'Billy',
           lastname: 'Shim', 
           password: '$2a$10$OJzbxagDDHmS1FNS1z9KyOQwNDEYLmDCK695I/7xxr8w8aZKDYueS',          
           email: 'billy@example.com',
@@ -46,7 +46,7 @@ exports.seed = function(knex, Promise) {
           status: 'manager'
         },
         {
-          user_id: 6, firstname: 'Hugo',
+          firstname: 'Hugo',
           lastname: 'Cheng', 
           password: '$2a$10$OJzbxagDDHmS1FNS1z9KyOQwNDEYLmDCK695I/7xxr8w8aZKDYueS',          
           email: 'hugo@example.com',
@@ -55,7 +55,7 @@ exports.seed = function(knex, Promise) {
           status: 'player'
         },
         {
-          user_id: 7, firstname: 'Telford',
+          firstname: 'Telford',
           lastname: 'Ho', 
           password: '$2a$10$OJzbxagDDHmS1FNS1z9KyOQwNDEYLmDCK695I/7xxr8w8aZKDYueS',          
           email: 'telford@example.com',
@@ -64,7 +64,7 @@ exports.seed = function(knex, Promise) {
           status: 'player'
         },
         {
-          user_id: 8, firstname: 'Allen',
+          firstname: 'Allen',
           lastname: 'Chum', 
           password: '$2a$10$OJzbxagDDHmS1FNS1z9KyOQwNDEYLmDCK695I/7xxr8w8aZKDYueS',          
           email: 'allen@example.com',
@@ -73,7 +73,7 @@ exports.seed = function(knex, Promise) {
           status: 'player'
         },
         {
-          user_id: 9, firstname: 'Charles',
+          firstname: 'Charles',
           lastname: 'Chan', 
           password: '$2a$10$OJzbxagDDHmS1FNS1z9KyOQwNDEYLmDCK695I/7xxr8w8aZKDYueS',          
           email: 'charles@example.com',
@@ -82,7 +82,7 @@ exports.seed = function(knex, Promise) {
           status: 'player'
         },
         {
-          user_id: 10, firstname: 'Seamus',
+          firstname: 'Seamus',
           lastname: 'y', 
           password: '$2a$10$OJzbxagDDHmS1FNS1z9KyOQwNDEYLmDCK695I/7xxr8w8aZKDYueS',          
           email: 'seamus@example.com',
@@ -91,7 +91,7 @@ exports.seed = function(knex, Promise) {
           status: 'player'
         },
         {
-          user_id: 11, firstname: 'Luke',
+          firstname: 'Luke',
           lastname: 'Yeung', 
           password: '$2a$10$OJzbxagDDHmS1FNS1z9KyOQwNDEYLmDCK695I/7xxr8w8aZKDYueS',          
           email: 'luke@example.com',
@@ -100,7 +100,7 @@ exports.seed = function(knex, Promise) {
           status: 'player'
         },
         {
-          user_id: 12, firstname: 'Warren',
+          firstname: 'Warren',
           lastname: 'Habimana', 
           password: '$2a$10$OJzbxagDDHmS1FNS1z9KyOQwNDEYLmDCK695I/7xxr8w8aZKDYueS',          
           email: 'enoch@example.com',
@@ -109,7 +109,7 @@ exports.seed = function(knex, Promise) {
           status: 'player'
         },
         {
-          user_id: 13, firstname: 'Alex',
+          firstname: 'Alex',
           lastname: 'Lau', 
           password: '$2a$10$OJzbxagDDHmS1FNS1z9KyOQwNDEYLmDCK695I/7xxr8w8aZKDYueS',          
           email: 'alex@example.com',
@@ -117,7 +117,7 @@ exports.seed = function(knex, Promise) {
           status: 'organizer'
         },
         {
-          user_id: 14, firstname: 'Gordon',
+          firstname: 'Gordon',
           lastname: 'Lau', 
           password: '$2a$10$OJzbxagDDHmS1FNS1z9KyOQwNDEYLmDCK695I/7xxr8w8aZKDYueS',          
           email: 'gordanlau@example.com',
@@ -125,7 +125,7 @@ exports.seed = function(knex, Promise) {
           status: 'organizer'
         },
         {
-          user_id: 15, firstname: 'Michael',
+          firstname: 'Michael',
           lastname: 'Fung', 
           password: '$2a$10$OJzbxagDDHmS1FNS1z9KyOQwNDEYLmDCK695I/7xxr8w8aZKDYueS',          
           email: 'Michael@example.com',
