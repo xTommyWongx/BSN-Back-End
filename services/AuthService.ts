@@ -11,17 +11,21 @@ export default class AuthService {
             const result = await this.knex.select()
                 .from('users')
                 .where('facebook_id', facebookId)
+                .returning('user_id')
 
             if (result.length === 0) {
-                return await this.knex
+                let user =  await this.knex
                     .insert({
                         facebook_id: facebookId,
                         firstname: facebookUserName
                     })
                     .into('users')
+                    .returning('user_id')
+                
+                return user[0];
+            } else {
+                return result[0].user_id;
             }
-
-            return;
         } catch (err) {
             console.log(err)
             throw err;

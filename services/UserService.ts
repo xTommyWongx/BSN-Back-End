@@ -23,6 +23,19 @@ export default class UserService {
             .update(modifier);
     }
 
+    // update user information using facebook login
+    editUserInfo(userId: number, userInfo: Models.userInfoForFacebookLogin) {
+        return this.knex('users')
+            .where('user_id', userId)
+            .update({
+                firstname: userInfo.firstname,
+                lastname: userInfo.lastname,
+                location: userInfo.location,
+                status: userInfo.status
+            })
+            .returning(['user_id', 'status'])
+    }
+
     dashboardWithTeam(id: number){
        return this.knex.select().from('users')
                     .where('user_id',id)
@@ -52,5 +65,9 @@ export default class UserService {
     }
     tournamentDetail(req: Request, res: Response){
 
+    }
+    uploadProfilePic(img:string,id: number){
+        return this.knex('users').update('image',img)
+                    .where('user_id', id);
     }
 }
