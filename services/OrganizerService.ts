@@ -1,7 +1,9 @@
 import * as Knex from 'knex';
 
 export default class OrganizerService {
-    constructor(private knex: Knex) { }
+
+    constructor(private knex: Knex) { 
+    }
     // get all tournaments post for organizer and player
     index() {
         return this.knex
@@ -14,34 +16,65 @@ export default class OrganizerService {
     }
 
     // get all tournaments post for manager    
+    // indexForManager(teamId: number) {
+    //     return this.knex.raw(`
+    //         SELECT 
+    //             t.tournament_id AS id, t.category, t.number_of_teams, t.game_size, t.organizer_id, t.winner_prize, t.runnerup_prize, t.entry_fee, t.tournament_name,
+    //             t_dates_location.date, t_dates_location.location,
+    //             t_teams.team_id AS t_team_id,
+    //             t_requests.team_id AS request_team_id,
+    //             users.firstname, users.lastname
+    //         FROM tournaments AS t
+            
+
+    //         INNER JOIN users
+    //         ON t.organizer_id = users.user_id
+            
+    //         INNER JOIN tournaments_dates_location AS t_dates_location
+    //         ON t.tournament_id = t_dates_location.tournament_id
+            
+    //         LEFT OUTER JOIN tournaments_teams AS t_teams
+    //         ON t.tournament_id = t_teams.tournament_id
+            
+    //         LEFT OUTER JOIN tournament_requests AS t_requests
+    //         ON t.tournament_id = t_requests.tournament_id
+            
+    //         WHERE t_teams.team_id = ${teamId} OR t_teams.team_id IS NULL
+    //         AND t.deleted = FALSE
+    //         ORDER BY t_dates_location.date
+
+    //     `)
+    // }
+
     indexForManager(teamId: number) {
         return this.knex.raw(`
-            SELECT 
-                t.tournament_id AS id, t.category, t.number_of_teams, t.game_size, t.organizer_id, t.winner_prize, t.runnerup_prize, t.entry_fee, t.tournament_name,
-                t_dates_location.date, t_dates_location.location,
-                t_teams.team_id AS t_team_id,
-                t_requests.team_id AS request_team_id,
-                users.firstname, users.lastname
-            FROM tournaments AS t
-            
-
-            INNER JOIN users
-            ON t.organizer_id = users.user_id
-            
-            INNER JOIN tournaments_dates_location AS t_dates_location
-            ON t.tournament_id = t_dates_location.tournament_id
-            
-            LEFT OUTER JOIN tournaments_teams AS t_teams
-            ON t.tournament_id = t_teams.tournament_id
-            
-            LEFT OUTER JOIN tournament_requests AS t_requests
-            ON t.tournament_id = t_requests.tournament_id
-            
-            WHERE t_teams.team_id = ${teamId} OR t_teams.team_id IS NULL
-            AND t.deleted = FALSE
-            ORDER BY t_dates_location.date
-
-        `)
+        SELECT 
+            t.tournament_id 	AS id, 
+            t.category		    AS catgory, 
+            t.number_of_teams	AS number_of_teams, 
+            t.game_size 		AS game_size, 
+            t.organizer_id 		AS organizer_id, 
+            t.winner_prize		AS winner_prize, 
+            t.runnerup_prize	AS runnerup_prize,  
+            t.entry_fee		    AS entry_fee,  
+            t.tournament_name	AS tournament_name,  
+            tdl.date		    AS date,  
+            tdl.location		AS location,  
+                
+            CASE 
+                WHEN tt.team_id IS NOT null THEN 'I' 				-- organizer approved
+            WHEN tr.team_id IS null AND tt.team_id IS null THEN 'J' 	-- nothing is clicked, show JOIN button
+            WHEN tr.team_id IS NOT null AND tt.team_id IS null THEN 'R' 	-- clicked JOIN button and wait for approval  
+            ELSE '-'
+            END			        AS condition
+        FROM tournaments AS t
+        LEFT JOIN users 			AS u 	ON t.organizer_id = u.user_id
+        LEFT JOIN tournaments_dates_location 	AS tdl 	ON t.tournament_id = tdl.tournament_id
+        LEFT JOIN tournament_requests 		AS tr 	ON t.tournament_id = tr.tournament_id AND tr.team_id = ?
+        LEFT JOIN tournaments_teams 		AS tt 	ON t.tournament_id = tt.tournament_id AND tt.team_id = ?
+        WHERE t.deleted = FALSE
+        ORDER BY tdl.date   
+        `,[teamId, teamId]);
     }
 
         // return this.knex.raw(`
