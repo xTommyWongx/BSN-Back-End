@@ -90,7 +90,7 @@ export default class UserRouter {
         if(req.user){
         const key = `${req.user.id}/${v1()}.jpeg`;
         s3.getSignedUrl('putObject', {
-            Bucket: 'building-sports-network',
+            Bucket: 'soccer-tournament-image',
             ContentType: 'image/jpeg',
             Key: key
         },
