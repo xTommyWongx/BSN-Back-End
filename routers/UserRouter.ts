@@ -7,7 +7,7 @@ const s3 = new AWS.S3({
     accessKeyId: process.env.accessKeyId,
     secretAccessKey: process.env.secretAccessKey,
     signatureVersion: 'v4',
-    region: 'ap-northeast-2'
+    region: 'ap-southeast-1'
 });
 
 export default class UserRouter {
