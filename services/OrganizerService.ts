@@ -16,36 +16,6 @@ export default class OrganizerService {
     }
 
     // get all tournaments post for manager    
-    // indexForManager(teamId: number) {
-    //     return this.knex.raw(`
-    //         SELECT 
-    //             t.tournament_id AS id, t.category, t.number_of_teams, t.game_size, t.organizer_id, t.winner_prize, t.runnerup_prize, t.entry_fee, t.tournament_name,
-    //             t_dates_location.date, t_dates_location.location,
-    //             t_teams.team_id AS t_team_id,
-    //             t_requests.team_id AS request_team_id,
-    //             users.firstname, users.lastname
-    //         FROM tournaments AS t
-            
-
-    //         INNER JOIN users
-    //         ON t.organizer_id = users.user_id
-            
-    //         INNER JOIN tournaments_dates_location AS t_dates_location
-    //         ON t.tournament_id = t_dates_location.tournament_id
-            
-    //         LEFT OUTER JOIN tournaments_teams AS t_teams
-    //         ON t.tournament_id = t_teams.tournament_id
-            
-    //         LEFT OUTER JOIN tournament_requests AS t_requests
-    //         ON t.tournament_id = t_requests.tournament_id
-            
-    //         WHERE t_teams.team_id = ${teamId} OR t_teams.team_id IS NULL
-    //         AND t.deleted = FALSE
-    //         ORDER BY t_dates_location.date
-
-    //     `)
-    // }
-
     indexForManager(teamId: number) {
         return this.knex.raw(`
         SELECT 
@@ -57,7 +27,8 @@ export default class OrganizerService {
             t.winner_prize		AS winner_prize, 
             t.runnerup_prize	AS runnerup_prize,  
             t.entry_fee		    AS entry_fee,  
-            t.tournament_name	AS tournament_name,  
+            t.tournament_name	AS tournament_name,
+            t.tournament_logo   AS tournament_logo,  
             tdl.date		    AS date,  
             tdl.location		AS location,  
                 
@@ -76,32 +47,6 @@ export default class OrganizerService {
         ORDER BY tdl.date   
         `,[teamId, teamId]);
     }
-
-        // return this.knex.raw(`
-        //     SELECT 
-        //     t.tournament_id AS id, t.category, t.number_of_teams, t.game_size, t.organizer_id, t.winner_prize, t.runnerup_prize, t.entry_fee, t.tournament_name,
-        //     t_dates_location.date, t_dates_location.location,
-        //     array_agg(t_teams.team_id) AS t_team_id,
-        //     array_agg(t_requests.team_id) AS request_team_id
-        //     FROM tournaments AS t
-        
-        //     INNER JOIN tournaments_dates_location AS t_dates_location
-        //     ON t.tournament_id = t_dates_location.tournament_id
-        
-        //     LEFT OUTER JOIN tournaments_teams AS t_teams
-        //     ON t.tournament_id = t_teams.tournament_id
-        
-        //     LEFT OUTER JOIN tournament_requests AS t_requests
-        //     ON t.tournament_id = t_requests.tournament_id
-        
-        //     GROUP BY t.tournament_id, t.category, t.number_of_teams, t.game_size, t.organizer_id, t.winner_prize, t.runnerup_prize, t.entry_fee, t.tournament_name,
-        //     t_dates_location.date, t_dates_location.location
-        
-        
-        //     ORDER BY t_dates_location.date
-        // `)
-
-        
 
     //get single tournament/api/organizers
     get(id: number) {

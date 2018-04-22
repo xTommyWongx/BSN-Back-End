@@ -17,7 +17,8 @@ export default class UserRouter {
     }
     router(): Router {
         let router = Router();
-        router.get('/profile', this.getProfile); //send profile info
+        router.get('/', this.getProfile); //send profile info
+        router.patch('/', this.editProfile);
         router.get('/getPresignedUrl', this.getPresignedUrl);//get the presigned url from aws
         router.put('/uploadPic', this.updateProfilePic);// update profile pic
         router.get('/dashboard', this.dashboard); //send dashboard info
@@ -26,8 +27,6 @@ export default class UserRouter {
         router.get('/tournaments', this.tournamentsList); //send all tournaments list
         router.get('/tournament/:id', this.tournamentDetail); //send tournament details
 
-        router.get('/', this.getProfile);
-        router.patch('/', this.editProfile);
         router.put('/:id', this.editUserInfo); // update user information using facebook login
         
         return router;
@@ -126,7 +125,7 @@ export default class UserRouter {
     }
 
     getProfile = (req: Request, res: Response) => {
-        // console.log(req.user)
+        console.log(req.user)
         if (req.user) {
             return this.userService.getProfile(req.user.id)
                 .then(data => res.json(data[0]))
@@ -135,14 +134,6 @@ export default class UserRouter {
             return -1;
         }
     }
-
-    // post = (req: Request, res: Response) => {
-    //     const body: Models.BasicUserInforamtion = req.body;
-
-    //     return this.userService.createNewInformation(body)
-    //         .then(data => res.json(data))
-    //         .catch(err => res.status(500).json(err));
-    // }
 
     editProfile = (req: Request, res: Response) => {
         console.log(req.body);

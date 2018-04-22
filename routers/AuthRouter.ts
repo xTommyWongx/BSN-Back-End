@@ -22,14 +22,17 @@ export default class AuthRouter {
         if (req.body.access_token) {
             try {
                 const accessToken = req.body.access_token;
-                let data = await axios.get(`https://graph.facebook.com/me?access_token=${accessToken}`);
+                let data = await axios.get(`https://graph.facebook.com/me?access_token=${accessToken}&fields=name, last_name,first_name,picture.width(960).height(960)`);
 
                 if (!data.data.error) {
+                    console.log(data.data)
                     const facebookId = parseInt(data.data.id);
                     const facebookUserName = data.data.name;
+                    const firstname = data.data.first_name;
+                    const lastname = data.data.last_name;
+                    const picture = data.data.picture.data.url;
 
-                    let user = await this.authService.login(facebookId, facebookUserName);
-
+                    await this.authService.login(facebookId, facebookUserName, firstname, lastname, picture)
                     let payload = {
                         facebook_id: facebookId
                     }
@@ -37,7 +40,6 @@ export default class AuthRouter {
                     let token = jwt.encode(payload, config.jwtSecret);
                     res.json({
                         token: token,
-                        user_id: user
                     });
                 }
             } catch (err) {
