@@ -5,7 +5,7 @@ import * as socket from 'socket.io';
 import * as Knex from 'knex';
 import {storeUser, getUser, redisClient} from './utils/redis';
 
-const NODE_ENV = process.env.NODE_ENV || 'development';
+const NODE_ENV = process.env.NODE_ENV || 'production';
 const knexFile = require('./knexfile')[NODE_ENV];
 const knex = Knex(knexFile);
 const port = process.env.PORT || 8080;
