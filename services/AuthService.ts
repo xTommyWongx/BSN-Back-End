@@ -22,6 +22,7 @@ export default class AuthService {
             const result = await this.knex.select()
                 .from('users')
                 .where('facebook_id', facebookId)
+                .returning('user_id')
 
             if (result.length === 0) {
                 let userId = await this.knex
@@ -62,8 +63,6 @@ export default class AuthService {
                 return this.knex('users').update('image', img)
                             .where('user_id', userId);
             }
-
-            return;
         } catch (err) {
             console.log(err)
             throw err;

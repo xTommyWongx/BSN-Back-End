@@ -7,7 +7,7 @@ const s3 = new AWS.S3({
     accessKeyId: process.env.accessKeyId,
     secretAccessKey: process.env.secretAccessKey,
     signatureVersion: 'v4',
-    region: 'ap-northeast-2'
+    region: 'ap-southeast-1'
 });
 
 export default class UserRouter {
@@ -26,6 +26,8 @@ export default class UserRouter {
         router.get('/team/:id', this.teamDetails); //send team detail 
         router.get('/tournaments', this.tournamentsList); //send all tournaments list
         router.get('/tournament/:id', this.tournamentDetail); //send tournament details
+
+        router.put('/:id', this.editUserInfo); // update user information using facebook login
         
         return router;
     }
@@ -87,7 +89,7 @@ export default class UserRouter {
         if(req.user){
         const key = `${req.user.id}/${v1()}.jpeg`;
         s3.getSignedUrl('putObject', {
-            Bucket: 'building-sports-network',
+            Bucket: 'soccer-tournament-image',
             ContentType: 'image/jpeg',
             Key: key
         },
@@ -142,5 +144,11 @@ export default class UserRouter {
         } else {
             return -1;
         }
+    }
+
+    editUserInfo = (req: Request, res: Response) => {
+        return this.userService.editUserInfo(req.params.id, req.body.userInfo)
+            .then(userStatus => res.json(userStatus[0]))
+            .catch(err => res.status(500))
     }
 }

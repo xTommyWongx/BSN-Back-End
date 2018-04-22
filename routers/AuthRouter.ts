@@ -39,10 +39,11 @@ export default class AuthRouter {
 
                     let token = jwt.encode(payload, config.jwtSecret);
                     res.json({
-                        token: token
+                        token: token,
                     });
                 }
             } catch (err) {
+                console.log(err)
                 res.sendStatus(401);
             }
         } else {
