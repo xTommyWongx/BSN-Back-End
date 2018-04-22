@@ -17,7 +17,7 @@ export default class OrganizerService {
     indexForManager(teamId: number) {
         return this.knex.raw(`
             SELECT 
-                t.tournament_id AS id, t.category, t.number_of_teams, t.game_size, t.organizer_id, t.winner_prize, t.runnerup_prize, t.entry_fee, t.tournament_name,
+                t.tournament_id AS id, t.category, t.number_of_teams, t.game_size, t.organizer_id, t.winner_prize, t.runnerup_prize, t.entry_fee, t.tournament_name, t.tournament_logo,
                 t_dates_location.date, t_dates_location.location,
                 t_teams.team_id AS t_team_id,
                 t_requests.team_id AS request_team_id,
