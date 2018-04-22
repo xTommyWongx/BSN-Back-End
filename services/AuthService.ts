@@ -9,7 +9,7 @@ const s3 = new AWS.S3({
     accessKeyId: process.env.accessKeyId,
     secretAccessKey: process.env.secretAccessKey,
     signatureVersion: 'v4',
-    region: 'ap-northeast-2'
+    region: 'ap-southeast-1'
 });
 
 export default class AuthService {
@@ -37,12 +37,12 @@ export default class AuthService {
 
                 // upload facebook pro pic to S3
                 const key = `${userId}/${v1()}.jpeg`;
-                let img = 'https://s3.ap-northeast-2.amazonaws.com/building-sports-network/' + key; //get back the img url from S3
+                let img = 'https://s3.ap-southeast-1.amazonaws.com/soccer-tournament-image/' + key; //get back the img url from S3
                 let buffer;
 
                 // signedUrl for push
                 const url = (s3.getSignedUrl('putObject', {
-                    Bucket: 'building-sports-network',
+                    Bucket: 'soccer-tournament-image',
                     ContentType: 'image/jpeg',
                     Key: key
                 }));
