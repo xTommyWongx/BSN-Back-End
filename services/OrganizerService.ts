@@ -30,9 +30,9 @@ export default class OrganizerService {
             t.tournament_name	AS tournament_name,
             t.tournament_logo   AS tournament_logo,  
             tdl.date		    AS date,  
-            tdl.location		AS location,
+            tdl.location		AS location, 
             u.firstname         AS firstname,
-            u.lastname          AS lastname,  
+            u.lastname          AS lastname,
                 
             CASE 
                 WHEN tt.team_id IS NOT null THEN 'I' 				-- organizer approved
@@ -199,7 +199,7 @@ export default class OrganizerService {
                 INNER JOIN venue
                 ON f.venue = venue.venue_id
                 WHERE f.fixture_id = :fixtureId
-            `,[fixtureId, fixtureId])
+            `,{fixtureId: fixtureId})
 
             const fixtures = result.rows;
 
