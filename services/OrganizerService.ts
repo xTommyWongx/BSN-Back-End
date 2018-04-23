@@ -20,7 +20,7 @@ export default class OrganizerService {
         return this.knex.raw(`
         SELECT 
             t.tournament_id 	AS id, 
-            t.category		    AS catgory, 
+            t.category		    AS category, 
             t.number_of_teams	AS number_of_teams, 
             t.game_size 		AS game_size, 
             t.organizer_id 		AS organizer_id, 
@@ -30,7 +30,9 @@ export default class OrganizerService {
             t.tournament_name	AS tournament_name,
             t.tournament_logo   AS tournament_logo,  
             tdl.date		    AS date,  
-            tdl.location		AS location,  
+            tdl.location		AS location, 
+            u.firstname         AS firstname,
+            u.lastname          AS lastname,
                 
             CASE 
                 WHEN tt.team_id IS NOT null THEN 'I' 				-- organizer approved
@@ -196,8 +198,8 @@ export default class OrganizerService {
                 ON f.away_team = away_team.team_id
                 INNER JOIN venue
                 ON f.venue = venue.venue_id
-                WHERE f.fixture_id = 11
-            `)
+                WHERE f.fixture_id = :fixtureId
+            `,{fixtureId: fixtureId})
 
             const fixtures = result.rows;
 
